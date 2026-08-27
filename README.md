@@ -66,14 +66,14 @@ DevTab Pro turns your browser's new tab page into a high-productivity command ce
 
 ### 📦 Download Latest Release
 
-[![Download DevTab Pro](https://img.shields.io/github/v/release/akashs278/dev-tab-pro?style=for-the-badge&logo=github&color=6366f1)](https://github.com/akashs278/dev-tab-pro/releases/latest)
+[![Download DevTab Pro](https://img.shields.io/github/v/release/akashs278/dev-tab-pro?style=for-the-badge&logo=github&color=6366f1)](https://github.com/akashs278/dev-tab-pro/releases)
 
-> ⚡ **Quick Download**: Download the latest zip package directly from the [GitHub Releases Page](https://github.com/akashs278/dev-tab-pro/releases/latest).
+> ⚡ **Quick Download**: Download the latest pre-packaged zip release directly from [https://github.com/akashs278/dev-tab-pro/releases](https://github.com/akashs278/dev-tab-pro/releases).
 
 ### Load Extension in Chrome / Chromium Browsers
 
 1. **Download & Extract**:
-   - Download the latest `.zip` package from [GitHub Releases](https://github.com/akashs278/dev-tab-pro/releases/latest) and extract the archive, **OR** clone the source code:
+   - Download the latest `.zip` package from [GitHub Releases](https://github.com/akashs278/dev-tab-pro/releases) (`https://github.com/akashs278/dev-tab-pro/releases`) and extract the archive, **OR** clone the source code:
    ```bash
    git clone https://github.com/akashs278/dev-tab-pro.git
    ```
