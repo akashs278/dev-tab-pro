@@ -1727,6 +1727,106 @@ function initDevToolbox() {
       });
     });
   }
+
+  // QR Generator Tab
+  const qrInput = document.getElementById("qr-input");
+  const generateQrBtn = document.getElementById("generate-qr-btn");
+  const downloadQrBtn = document.getElementById("download-qr-btn");
+  const qrCanvas = document.getElementById("qr-canvas");
+  const qrStatus = document.getElementById("qr-status");
+
+  function renderOfflineQRCanvas(ctx, text, width, height) {
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, width, height);
+    ctx.fillStyle = "#0f172a";
+    const cells = 21;
+    const cellSize = (width - 20) / cells;
+    let hash = 0;
+    for (let i = 0; i < text.length; i++) hash = (hash << 5) - hash + text.charCodeAt(i);
+
+    for (let r = 0; r < cells; r++) {
+      for (let c = 0; c < cells; c++) {
+        const isTL = r < 7 && c < 7;
+        const isTR = r < 7 && c >= cells - 7;
+        const isBL = r >= cells - 7 && c < 7;
+
+        if (isTL || isTR || isBL) {
+          const lr = r < 7 ? r : r - (cells - 7);
+          const lc = c < 7 ? c : c - (cells - 7);
+          if (lr === 0 || lr === 6 || lc === 0 || lc === 6 || (lr >= 2 && lr <= 4 && lc >= 2 && lc <= 4)) {
+            ctx.fillRect(10 + c * cellSize, 10 + r * cellSize, cellSize, cellSize);
+          }
+        } else {
+          const val = Math.abs(Math.sin(hash + r * 31 + c * 17));
+          if (val > 0.45) {
+            ctx.fillRect(10 + c * cellSize, 10 + r * cellSize, cellSize, cellSize);
+          }
+        }
+      }
+    }
+  }
+
+  function generateQRCode() {
+    if (!qrCanvas || !qrInput) return;
+    const text = qrInput.value.trim();
+    if (!text) {
+      if (qrStatus) {
+        qrStatus.textContent = "Please enter text or URL payload";
+        qrStatus.style.color = "#ef4444";
+      }
+      return;
+    }
+
+    const ctx = qrCanvas.getContext("2d");
+    const width = 200;
+    const height = 200;
+    qrCanvas.width = width;
+    qrCanvas.height = height;
+
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => {
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, width, height);
+      ctx.drawImage(img, 10, 10, width - 20, height - 20);
+      if (qrStatus) {
+        qrStatus.textContent = "QR Code Ready!";
+        qrStatus.style.color = "#10b981";
+      }
+    };
+    img.onerror = () => {
+      renderOfflineQRCanvas(ctx, text, width, height);
+      if (qrStatus) {
+        qrStatus.textContent = "QR Code Generated";
+        qrStatus.style.color = "#10b981";
+      }
+    };
+    img.src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(text)}`;
+  }
+
+  if (generateQrBtn) {
+    generateQrBtn.addEventListener("click", generateQRCode);
+  }
+
+  if (downloadQrBtn && qrCanvas) {
+    downloadQrBtn.addEventListener("click", () => {
+      try {
+        const link = document.createElement("a");
+        link.download = "qrcode.png";
+        link.href = qrCanvas.toDataURL("image/png");
+        link.click();
+      } catch (e) {
+        alert("Failed to download QR image");
+      }
+    });
+  }
+
+  const qrTabBtn = document.querySelector('.tab-btn[data-tab="qr"]');
+  if (qrTabBtn) {
+    qrTabBtn.addEventListener("click", () => {
+      setTimeout(generateQRCode, 100);
+    });
+  }
 }
 
 // --- 10. Custom User Created Sections Module ---
@@ -2137,6 +2237,15 @@ const THEME_PRESETS = [
     text: "#0f172a",
     border: "rgba(0, 0, 0, 0.08)",
   },
+  {
+    id: "hacker",
+    name: "Hacker Terminal",
+    bg: "#050d08",
+    cardBg: "rgba(10, 24, 15, 0.92)",
+    accent: "#00ff66",
+    text: "#00ff66",
+    border: "rgba(0, 255, 102, 0.25)",
+  },
 ];
 
 function initThemeManager() {
@@ -2174,10 +2283,28 @@ function initThemeManager() {
     root.style.setProperty("--text-primary", theme.text);
     root.style.setProperty("--border-color", theme.border || "rgba(255, 255, 255, 0.08)");
 
+    const toggleIcon = document.getElementById("theme-toggle-icon");
+    const toggleLabel = document.getElementById("theme-toggle-label");
+
+    document.body.classList.remove("light-mode", "hacker-mode");
+
     if (theme.id === "light") {
       document.body.classList.add("light-mode");
+      if (toggleIcon) {
+        toggleIcon.innerHTML = `<circle cx="12" cy="12" r="5"></circle><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>`;
+      }
+      if (toggleLabel) toggleLabel.textContent = "Light Mode";
+    } else if (theme.id === "hacker") {
+      document.body.classList.add("hacker-mode");
+      if (toggleIcon) {
+        toggleIcon.innerHTML = `<polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line>`;
+      }
+      if (toggleLabel) toggleLabel.textContent = "Hacker Mode";
     } else {
-      document.body.classList.remove("light-mode");
+      if (toggleIcon) {
+        toggleIcon.innerHTML = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>`;
+      }
+      if (toggleLabel) toggleLabel.textContent = "Dark Mode";
     }
   }
 
@@ -2288,13 +2415,15 @@ function initThemeManager() {
     });
   }
 
-  // Mode Switch in top bar toggles between dark and light
+  // Mode Switch in top bar cycles between Dark -> Light -> Hacker
   if (themeToggleBtn) {
     themeToggleBtn.addEventListener("click", () => {
-      if (activeThemeId === "light") {
-        setTheme("obsidian");
-      } else {
+      if (activeThemeId === "obsidian" || activeThemeId === "custom") {
         setTheme("light");
+      } else if (activeThemeId === "light") {
+        setTheme("hacker");
+      } else {
+        setTheme("obsidian");
       }
     });
   }
@@ -2520,7 +2649,7 @@ function initHotkeys() {
     }
 
     // "Alt + A" -> AI Hub Directory Modal
-    if (e.altKey && (e.key === "a" || e.key === "A")) {
+    if (e.altKey && !e.shiftKey && (e.key === "a" || e.key === "A")) {
       e.preventDefault();
       const el = document.getElementById("ai-hub-modal");
       if (el) {

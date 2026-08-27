@@ -1863,6 +1863,226 @@ body {
   box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
 }
 
+/* QR Code Generator Drawer Styles */
+.qr-output-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 16px;
+  gap: 12px;
+}
+
+.qr-canvas-wrapper {
+  background: #ffffff;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#qr-canvas {
+  display: block;
+  width: 200px;
+  height: 200px;
+}
+
+/* ==========================================================================
+   Comprehensive Light Mode Overrides (Modals, Analog Clock, Inputs, Cards)
+   ========================================================================== */
+
+/* Modals & Dialog Windows in Light Mode */
+body.light-mode .modal-card,
+body.light-mode .settings-split-modal,
+body.light-mode .gui-settings-34-frame {
+  background: #ffffff !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+  color: #0f172a !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15) !important;
+}
+
+body.light-mode .modal-header h2,
+body.light-mode .modal-header h3,
+body.light-mode .form-group label,
+body.light-mode .settings-section h3,
+body.light-mode .settings-section p,
+body.light-mode .setting-row label {
+  color: #0f172a !important;
+}
+
+body.light-mode .close-modal-btn {
+  color: #64748b !important;
+}
+
+body.light-mode .close-modal-btn:hover {
+  color: #0f172a !important;
+  background: rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Modal Form Controls & Inputs in Light Mode */
+body.light-mode .add-ai-form {
+  background: #f8fafc !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+body.light-mode .add-ai-form input,
+body.light-mode .form-group input,
+body.light-mode .form-group textarea,
+body.light-mode .color-input-wrapper,
+body.light-mode .settings-select {
+  background: #ffffff !important;
+  border-color: rgba(0, 0, 0, 0.16) !important;
+  color: #0f172a !important;
+}
+
+body.light-mode input::placeholder,
+body.light-mode textarea::placeholder {
+  color: #94a3b8 !important;
+  opacity: 1 !important;
+}
+
+body.light-mode .add-ai-form input:focus,
+body.light-mode .form-group input:focus,
+body.light-mode .form-group textarea:focus {
+  border-color: #6366f1 !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15) !important;
+}
+
+/* Modal Directory Cards & Link Cards in Light Mode */
+body.light-mode .ai-dir-card,
+body.light-mode .shortcut-card,
+body.light-mode .cheat-card {
+  background: #f8fafc !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  color: #0f172a !important;
+}
+
+body.light-mode .ai-dir-card:hover,
+body.light-mode .shortcut-card:hover {
+  background: #f1f5f9 !important;
+  border-color: #6366f1 !important;
+}
+
+body.light-mode .ai-dir-info strong,
+body.light-mode .platform-info strong,
+body.light-mode .shortcut-info strong {
+  color: #0f172a !important;
+}
+
+body.light-mode .platform-info .site-sub-link,
+body.light-mode .ai-dir-info .site-sub-link,
+body.light-mode .shortcut-info small {
+  color: #4f46e5 !important;
+}
+
+body.light-mode .btn-secondary {
+  background: #f1f5f9 !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+  color: #0f172a !important;
+}
+
+body.light-mode .btn-secondary:hover {
+  background: #e2e8f0 !important;
+}
+
+/* Analog Clock in Light Mode */
+body.light-mode .clock-face {
+  background: #ffffff !important;
+  border: 2px solid rgba(99, 102, 241, 0.4) !important;
+  box-shadow: 0 4px 25px rgba(99, 102, 241, 0.15), inset 0 0 12px rgba(0, 0, 0, 0.03) !important;
+}
+
+body.light-mode .clock-number span {
+  color: #475569 !important;
+}
+
+body.light-mode .clock-number.num-12 span,
+body.light-mode .clock-number.num-3 span,
+body.light-mode .clock-number.num-6 span,
+body.light-mode .clock-number.num-9 span {
+  color: #4f46e5 !important;
+}
+
+body.light-mode .hour-hand {
+  background: #0f172a !important;
+}
+
+body.light-mode .minute-hand {
+  background: #4f46e5 !important;
+}
+
+body.light-mode .second-hand {
+  background: #0284c7 !important;
+}
+
+/* ==========================================================================
+   Hacker Terminal Vibe Theme Overrides
+   ========================================================================== */
+body.hacker-mode {
+  --bg-color: #050d08;
+  --bg-gradient: radial-gradient(circle at 50% 0%, #0c2014 0%, #050d08 100%);
+  --card-bg: rgba(10, 24, 15, 0.92);
+  --card-hover: rgba(15, 36, 22, 0.95);
+  --border-color: rgba(0, 255, 102, 0.25);
+  --text-primary: #00ff66;
+  --text-secondary: #00cc52;
+  --text-muted: #008837;
+  --accent-color: #00ff66;
+  --accent-hover: #00cc52;
+  --accent-glow: rgba(0, 255, 102, 0.4);
+}
+
+body.hacker-mode * {
+  font-family: "Fira Code", "Courier New", monospace !important;
+}
+
+body.hacker-mode .btn-control,
+body.hacker-mode .text-link-btn,
+body.hacker-mode .btn-primary {
+  background: rgba(0, 255, 102, 0.1) !important;
+  border-color: rgba(0, 255, 102, 0.4) !important;
+  color: #00ff66 !important;
+  box-shadow: 0 0 10px rgba(0, 255, 102, 0.2) !important;
+}
+
+body.hacker-mode .modal-card,
+body.hacker-mode .settings-split-modal {
+  background: #08140c !important;
+  border-color: rgba(0, 255, 102, 0.35) !important;
+  color: #00ff66 !important;
+  box-shadow: 0 0 35px rgba(0, 255, 102, 0.2) !important;
+}
+
+body.hacker-mode input,
+body.hacker-mode textarea {
+  background: rgba(0, 20, 10, 0.7) !important;
+  border-color: rgba(0, 255, 102, 0.4) !important;
+  color: #00ff66 !important;
+}
+
+body.hacker-mode .clock-face {
+  background: rgba(5, 20, 10, 0.9) !important;
+  border-color: #00ff66 !important;
+  box-shadow: 0 0 25px rgba(0, 255, 102, 0.35) !important;
+}
+
+body.hacker-mode .hour-hand {
+  background: #00ff66 !important;
+}
+
+body.hacker-mode .minute-hand,
+body.hacker-mode .second-hand {
+  background: #33ff88 !important;
+}
+
+body.hacker-mode .clock-pin {
+  background: #00ff66 !important;
+  box-shadow: 0 0 8px #00ff66 !important;
+}
+
 /* Universal Hidden Utility */
 .hidden {
   display: none !important;
