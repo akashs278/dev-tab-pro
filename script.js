@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
   StorageManager.syncFromChromeStorage().then(() => {
     initOnboarding();
     initClock();
+    initDevUtilities();
     initGoogleLinks();
     initTodoList();
     initSearchEngine();
@@ -491,6 +492,12 @@ function initGoogleLinks() {
 
   googleBtn.addEventListener("click", (e) => {
     e.stopPropagation();
+    const utilsDropdown = document.getElementById("dev-utilities-dropdown");
+    if (utilsDropdown) {
+      utilsDropdown.classList.add("hidden");
+      utilsDropdown.style.display = "none";
+    }
+
     const isHidden = googleDropdown.classList.contains("hidden");
     if (isHidden) {
       googleDropdown.classList.remove("hidden");
@@ -507,6 +514,131 @@ function initGoogleLinks() {
   });
 
   renderGApps();
+}
+
+// --- 2b. Dev Utilities Waffle Launcher Module ---
+function initDevUtilities() {
+  const utilsBtn = document.getElementById("dev-utilities-btn");
+  const utilsDropdown = document.getElementById("dev-utilities-dropdown");
+
+  if (!utilsBtn || !utilsDropdown) return;
+
+  const defaultDevUtils = [
+    { id: "json", name: "JSON Tools", iconText: "{ }", bgClass: "bg-json" },
+    { id: "base64", name: "Base64", iconText: "64", bgClass: "bg-base64" },
+    { id: "url", name: "URL Encoder", iconText: "%", bgClass: "bg-url" },
+    { id: "hash", name: "Hash / UUID", iconText: "#", bgClass: "bg-hash" },
+    { id: "jwt", name: "JWT Inspector", iconText: "JWT", bgClass: "bg-jwt" },
+    { id: "regex", name: "RegEx Tester", iconText: ".*", bgClass: "bg-regex" },
+    { id: "color", name: "Color Picker", iconText: "🎨", bgClass: "bg-color" },
+    { id: "timestamp", name: "Timestamp", iconText: "⏱", bgClass: "bg-timestamp" },
+    { id: "markdown", name: "Markdown", iconText: "M↓", bgClass: "bg-markdown" },
+    { id: "diff", name: "Diff Checker", iconText: "±", bgClass: "bg-diff" },
+  ];
+
+  let devUtils = StorageManager.get("devtab_dev_utils", defaultDevUtils);
+  if (!Array.isArray(devUtils) || devUtils.length === 0) {
+    devUtils = defaultDevUtils;
+    StorageManager.set("devtab_dev_utils", devUtils);
+  }
+
+  let draggedUtilIndex = null;
+
+  function renderDevUtils() {
+    utilsDropdown.innerHTML = "";
+    devUtils.forEach((util, idx) => {
+      const tile = document.createElement("button");
+      tile.type = "button";
+      tile.className = "g-app-tile dev-util-tile";
+      tile.draggable = true;
+      tile.title = util.name + " (Click to open, drag to rearrange)";
+
+      const badge = document.createElement("div");
+      badge.className = "util-icon-badge " + util.bgClass;
+      badge.textContent = util.iconText;
+
+      const span = document.createElement("span");
+      span.textContent = util.name;
+
+      tile.appendChild(badge);
+      tile.appendChild(span);
+
+      tile.addEventListener("click", (e) => {
+        e.stopPropagation();
+        utilsDropdown.classList.add("hidden");
+        utilsDropdown.style.display = "none";
+
+        // Open toolbox modal to the selected tool tab
+        const modal = document.getElementById("toolbox-modal");
+        if (modal) {
+          openModal(modal);
+          const tabBtn = document.querySelector(`.toolbox-tabs .tab-btn[data-tab="${util.id}"]`);
+          if (tabBtn) tabBtn.click();
+        }
+      });
+
+      // Drag and Drop reordering
+      tile.addEventListener("dragstart", (e) => {
+        draggedUtilIndex = idx;
+        tile.classList.add("dragging");
+        e.dataTransfer.effectAllowed = "move";
+      });
+
+      tile.addEventListener("dragend", () => {
+        tile.classList.remove("dragging");
+        utilsDropdown
+          .querySelectorAll(".dev-util-tile")
+          .forEach((t) => t.classList.remove("drag-over"));
+      });
+
+      tile.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        tile.classList.add("drag-over");
+      });
+
+      tile.addEventListener("dragleave", () => {
+        tile.classList.remove("drag-over");
+      });
+
+      tile.addEventListener("drop", (e) => {
+        e.preventDefault();
+        tile.classList.remove("drag-over");
+        if (draggedUtilIndex !== null && draggedUtilIndex !== idx) {
+          const moved = devUtils.splice(draggedUtilIndex, 1)[0];
+          devUtils.splice(idx, 0, moved);
+          StorageManager.set("devtab_dev_utils", devUtils);
+          renderDevUtils();
+        }
+      });
+
+      utilsDropdown.appendChild(tile);
+    });
+  }
+
+  utilsBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const googleDropdown = document.getElementById("google-links-dropdown");
+    if (googleDropdown) {
+      googleDropdown.classList.add("hidden");
+      googleDropdown.style.display = "none";
+    }
+
+    const isHidden = utilsDropdown.classList.contains("hidden");
+    if (isHidden) {
+      utilsDropdown.classList.remove("hidden");
+      utilsDropdown.style.display = "grid";
+    } else {
+      utilsDropdown.classList.add("hidden");
+      utilsDropdown.style.display = "none";
+    }
+  });
+
+  document.addEventListener("click", () => {
+    utilsDropdown.classList.add("hidden");
+    utilsDropdown.style.display = "none";
+  });
+
+  renderDevUtils();
 }
 
 // --- 3. AI Tools Module with Multi-Line Text/Link & Drag-and-Drop in Dashboard + Modal ---
@@ -2732,6 +2864,11 @@ function initHotkeys() {
       if (googleDropdown) {
         googleDropdown.classList.add("hidden");
         googleDropdown.style.display = "none";
+      }
+      const utilsDropdown = document.getElementById("dev-utilities-dropdown");
+      if (utilsDropdown) {
+        utilsDropdown.classList.add("hidden");
+        utilsDropdown.style.display = "none";
       }
     }
   });
