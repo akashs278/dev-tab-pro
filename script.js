@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
   StorageManager.syncFromChromeStorage().then(() => {
     initOnboarding();
     initClock();
+    initDevUtilities();
     initGoogleLinks();
     initTodoList();
     initSearchEngine();
@@ -169,10 +170,7 @@ function initTodoList() {
   const todoList = document.getElementById("todo-list");
   const todoCount = document.getElementById("todo-count");
 
-  const defaultTodos = [
-    { text: "Review pull requests", completed: false },
-    { text: "Deploy latest build to staging", completed: true },
-  ];
+  const defaultTodos = [];
 
   let todos = StorageManager.get("devtab_todos", defaultTodos);
   if (!Array.isArray(todos)) todos = defaultTodos;
@@ -494,6 +492,12 @@ function initGoogleLinks() {
 
   googleBtn.addEventListener("click", (e) => {
     e.stopPropagation();
+    const utilsDropdown = document.getElementById("dev-utilities-dropdown");
+    if (utilsDropdown) {
+      utilsDropdown.classList.add("hidden");
+      utilsDropdown.style.display = "none";
+    }
+
     const isHidden = googleDropdown.classList.contains("hidden");
     if (isHidden) {
       googleDropdown.classList.remove("hidden");
@@ -510,6 +514,130 @@ function initGoogleLinks() {
   });
 
   renderGApps();
+}
+
+// --- 2b. Dev Utilities Waffle Launcher Module ---
+function initDevUtilities() {
+  const utilsBtn = document.getElementById("dev-utilities-btn");
+  const utilsDropdown = document.getElementById("dev-utilities-dropdown");
+
+  if (!utilsBtn || !utilsDropdown) return;
+
+  const defaultDevUtils = [
+    { id: "json", name: "JSON Tools", iconText: "{ }", bgClass: "bg-json" },
+    { id: "base64", name: "Base64", iconText: "64", bgClass: "bg-base64" },
+    { id: "url", name: "URL Encoder", iconText: "%", bgClass: "bg-url" },
+    { id: "uuid", name: "UUID Gen", iconText: "#", bgClass: "bg-hash" },
+    { id: "jwt", name: "JWT Inspector", iconText: "JWT", bgClass: "bg-jwt" },
+    { id: "regex", name: "RegEx Tester", iconText: ".*", bgClass: "bg-regex" },
+    { id: "timestamp", name: "Timestamp", iconText: "⏱", bgClass: "bg-timestamp" },
+    { id: "qr", name: "QR Generator", iconText: "QR", bgClass: "bg-color" },
+    { id: "cheatsheet", name: "Dev Cheatsheet", iconText: "⚡", bgClass: "bg-markdown" },
+  ];
+
+  let devUtils = StorageManager.get("devtab_dev_utils", defaultDevUtils);
+  if (!Array.isArray(devUtils) || devUtils.length === 0) {
+    devUtils = defaultDevUtils;
+    StorageManager.set("devtab_dev_utils", devUtils);
+  }
+
+  let draggedUtilIndex = null;
+
+  function renderDevUtils() {
+    utilsDropdown.innerHTML = "";
+    devUtils.forEach((util, idx) => {
+      const tile = document.createElement("button");
+      tile.type = "button";
+      tile.className = "g-app-tile dev-util-tile";
+      tile.draggable = true;
+      tile.title = util.name + " (Click to open, drag to rearrange)";
+
+      const badge = document.createElement("div");
+      badge.className = "util-icon-badge " + util.bgClass;
+      badge.textContent = util.iconText;
+
+      const span = document.createElement("span");
+      span.textContent = util.name;
+
+      tile.appendChild(badge);
+      tile.appendChild(span);
+
+      tile.addEventListener("click", (e) => {
+        e.stopPropagation();
+        utilsDropdown.classList.add("hidden");
+        utilsDropdown.style.display = "none";
+
+        // Open toolbox modal to the selected tool tab
+        const modal = document.getElementById("toolbox-modal");
+        if (modal) {
+          openModal(modal);
+          const tabBtn = document.querySelector(`.toolbox-tabs .tab-btn[data-tab="${util.id}"]`);
+          if (tabBtn) tabBtn.click();
+        }
+      });
+
+      // Drag and Drop reordering
+      tile.addEventListener("dragstart", (e) => {
+        draggedUtilIndex = idx;
+        tile.classList.add("dragging");
+        e.dataTransfer.effectAllowed = "move";
+      });
+
+      tile.addEventListener("dragend", () => {
+        tile.classList.remove("dragging");
+        utilsDropdown
+          .querySelectorAll(".dev-util-tile")
+          .forEach((t) => t.classList.remove("drag-over"));
+      });
+
+      tile.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        tile.classList.add("drag-over");
+      });
+
+      tile.addEventListener("dragleave", () => {
+        tile.classList.remove("drag-over");
+      });
+
+      tile.addEventListener("drop", (e) => {
+        e.preventDefault();
+        tile.classList.remove("drag-over");
+        if (draggedUtilIndex !== null && draggedUtilIndex !== idx) {
+          const moved = devUtils.splice(draggedUtilIndex, 1)[0];
+          devUtils.splice(idx, 0, moved);
+          StorageManager.set("devtab_dev_utils", devUtils);
+          renderDevUtils();
+        }
+      });
+
+      utilsDropdown.appendChild(tile);
+    });
+  }
+
+  utilsBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const googleDropdown = document.getElementById("google-links-dropdown");
+    if (googleDropdown) {
+      googleDropdown.classList.add("hidden");
+      googleDropdown.style.display = "none";
+    }
+
+    const isHidden = utilsDropdown.classList.contains("hidden");
+    if (isHidden) {
+      utilsDropdown.classList.remove("hidden");
+      utilsDropdown.style.display = "grid";
+    } else {
+      utilsDropdown.classList.add("hidden");
+      utilsDropdown.style.display = "none";
+    }
+  });
+
+  document.addEventListener("click", () => {
+    utilsDropdown.classList.add("hidden");
+    utilsDropdown.style.display = "none";
+  });
+
+  renderDevUtils();
 }
 
 // --- 3. AI Tools Module with Multi-Line Text/Link & Drag-and-Drop in Dashboard + Modal ---
@@ -1838,6 +1966,144 @@ function initDevToolbox() {
       setTimeout(generateQRCode, 100);
     });
   }
+
+  // JWT Inspector Tab
+  const jwtInput = document.getElementById("jwt-input");
+  const jwtDecodeBtn = document.getElementById("jwt-decode-btn");
+  const jwtHeaderOutput = document.getElementById("jwt-header-output");
+  const jwtPayloadOutput = document.getElementById("jwt-payload-output");
+  const jwtStatus = document.getElementById("jwt-status");
+
+  function parseJwtPart(str) {
+    let base64 = str.replace(/-/g, "+").replace(/_/g, "/");
+    while (base64.length % 4) base64 += "=";
+    const jsonStr = decodeURIComponent(
+      atob(base64)
+        .split("")
+        .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+        .join("")
+    );
+    return JSON.parse(jsonStr);
+  }
+
+  if (jwtDecodeBtn && jwtInput) {
+    jwtDecodeBtn.addEventListener("click", () => {
+      try {
+        const token = jwtInput.value.trim();
+        if (!token) return;
+        const parts = token.split(".");
+        if (parts.length < 2) throw new Error("Invalid JWT format (must have 3 parts separated by dots)");
+
+        const headerObj = parseJwtPart(parts[0]);
+        const payloadObj = parseJwtPart(parts[1]);
+
+        if (jwtHeaderOutput) jwtHeaderOutput.value = JSON.stringify(headerObj, null, 2);
+        if (jwtPayloadOutput) jwtPayloadOutput.value = JSON.stringify(payloadObj, null, 2);
+
+        if (jwtStatus) {
+          jwtStatus.textContent = "JWT Token Decoded Successfully!";
+          jwtStatus.style.color = "#10b981";
+        }
+      } catch (err) {
+        if (jwtHeaderOutput) jwtHeaderOutput.value = "";
+        if (jwtPayloadOutput) jwtPayloadOutput.value = "";
+        if (jwtStatus) {
+          jwtStatus.textContent = "Decode Failed: " + err.message;
+          jwtStatus.style.color = "#ef4444";
+        }
+      }
+    });
+  }
+
+  // RegEx Tester Tab
+  const regexPattern = document.getElementById("regex-pattern");
+  const regexFlags = document.getElementById("regex-flags");
+  const regexText = document.getElementById("regex-text");
+  const regexTestBtn = document.getElementById("regex-test-btn");
+  const regexMatches = document.getElementById("regex-matches");
+  const regexStatus = document.getElementById("regex-status");
+
+  if (regexTestBtn && regexPattern && regexText) {
+    regexTestBtn.addEventListener("click", () => {
+      try {
+        const pat = regexPattern.value;
+        const flags = regexFlags ? regexFlags.value.trim() : "g";
+        if (!pat) return;
+        const re = new RegExp(pat, flags);
+        const text = regexText.value;
+        const matches = text.match(re);
+
+        if (matches && matches.length > 0) {
+          if (regexMatches) regexMatches.value = matches.map((m, i) => `Match ${i + 1}: ${m}`).join("\n");
+          if (regexStatus) {
+            regexStatus.textContent = `Found ${matches.length} match(es)!`;
+            regexStatus.style.color = "#10b981";
+          }
+        } else {
+          if (regexMatches) regexMatches.value = "No matches found.";
+          if (regexStatus) {
+            regexStatus.textContent = "No matches found.";
+            regexStatus.style.color = "#f59e0b";
+          }
+        }
+      } catch (err) {
+        if (regexMatches) regexMatches.value = "";
+        if (regexStatus) {
+          regexStatus.textContent = "RegEx Error: " + err.message;
+          regexStatus.style.color = "#ef4444";
+        }
+      }
+    });
+  }
+
+  // Unix Timestamp Tab
+  const currentTsEl = document.getElementById("current-timestamp");
+  const tsInput = document.getElementById("ts-input");
+  const tsConvertBtn = document.getElementById("ts-convert-btn");
+  const tsDateOutput = document.getElementById("ts-date-output");
+
+  const dateInput = document.getElementById("date-input");
+  const dateConvertBtn = document.getElementById("date-convert-btn");
+  const dateTsOutput = document.getElementById("date-ts-output");
+
+  function updateLiveTimestamp() {
+    if (currentTsEl) {
+      currentTsEl.textContent = Math.floor(Date.now() / 1000).toString();
+    }
+  }
+  updateLiveTimestamp();
+  setInterval(updateLiveTimestamp, 1000);
+
+  if (tsConvertBtn && tsInput) {
+    tsConvertBtn.addEventListener("click", () => {
+      const val = parseInt(tsInput.value.trim(), 10);
+      if (isNaN(val)) {
+        if (tsDateOutput) {
+          tsDateOutput.textContent = "Invalid timestamp";
+          tsDateOutput.style.color = "#ef4444";
+        }
+        return;
+      }
+      const d = new Date(val * 1000);
+      if (tsDateOutput) {
+        tsDateOutput.textContent = `UTC: ${d.toUTCString()} | Local: ${d.toLocaleString()}`;
+        tsDateOutput.style.color = "#10b981";
+      }
+    });
+  }
+
+  if (dateConvertBtn && dateInput) {
+    dateConvertBtn.addEventListener("click", () => {
+      const val = dateInput.value;
+      if (!val) return;
+      const d = new Date(val);
+      const ts = Math.floor(d.getTime() / 1000);
+      if (dateTsOutput) {
+        dateTsOutput.textContent = `Timestamp: ${ts}`;
+        dateTsOutput.style.color = "#10b981";
+      }
+    });
+  }
 }
 
 // --- 10. Custom User Created Sections Module ---
@@ -2209,94 +2475,103 @@ function initSettingsAndVisibility() {
 // --- 12. Prebuilt & Custom Theme Management Module ---
 const THEME_PRESETS = [
   {
-    id: "obsidian",
-    name: "Obsidian Dark",
+    id: "github-dark",
+    name: "GitHub Dark",
     bg: "#0d1117",
     cardBg: "rgba(22, 27, 34, 0.85)",
-    accent: "#6366f1",
+    accent: "#2f81f7",
+    text: "#c9d1d9",
+    border: "rgba(48, 54, 61, 0.8)",
+  },
+  {
+    id: "github-dark-dimmed",
+    name: "GitHub Dark Dimmed",
+    bg: "#22272e",
+    cardBg: "rgba(45, 51, 59, 0.9)",
+    accent: "#539bf5",
+    text: "#adbac7",
+    border: "rgba(68, 76, 86, 0.8)",
+  },
+  {
+    id: "github-dark-high-contrast",
+    name: "GitHub Dark High Contrast",
+    bg: "#010409",
+    cardBg: "rgba(13, 17, 23, 0.95)",
+    accent: "#409fff",
     text: "#f0f6fc",
-    border: "rgba(255, 255, 255, 0.08)",
+    border: "rgba(122, 130, 142, 0.8)",
   },
   {
-    id: "cyber",
-    name: "Midnight Cyber",
-    bg: "#050508",
-    cardBg: "rgba(13, 14, 24, 0.9)",
-    accent: "#06b6d4",
-    text: "#f8fafc",
-    border: "rgba(6, 182, 212, 0.2)",
+    id: "github-dark-colorblind",
+    name: "GitHub Dark Colorblind",
+    bg: "#0d1117",
+    cardBg: "rgba(22, 27, 34, 0.85)",
+    accent: "#388bfd",
+    text: "#c9d1d9",
+    border: "rgba(48, 54, 61, 0.8)",
   },
   {
-    id: "tokyo",
-    name: "Tokyo Night",
-    bg: "#1a1b26",
-    cardBg: "rgba(36, 40, 59, 0.9)",
-    accent: "#7aa2f7",
-    text: "#c0caf5",
-    border: "rgba(122, 162, 247, 0.16)",
+    id: "github-light",
+    name: "GitHub Light",
+    bg: "#ffffff",
+    cardBg: "rgba(246, 248, 250, 0.95)",
+    accent: "#0969da",
+    text: "#24292f",
+    border: "rgba(208, 215, 222, 0.8)",
   },
   {
-    id: "dracula",
-    name: "Dracula",
-    bg: "#282a36",
-    cardBg: "rgba(40, 42, 54, 0.92)",
-    accent: "#bd93f9",
-    text: "#f8f8f2",
-    border: "rgba(189, 147, 249, 0.18)",
+    id: "github-light-high-contrast",
+    name: "GitHub Light High Contrast",
+    bg: "#ffffff",
+    cardBg: "rgba(246, 248, 250, 0.95)",
+    accent: "#0349b4",
+    text: "#0e1116",
+    border: "rgba(36, 41, 47, 0.8)",
   },
   {
-    id: "catppuccin",
-    name: "Catppuccin",
-    bg: "#1e1e2e",
-    cardBg: "rgba(30, 30, 46, 0.92)",
-    accent: "#cba6f7",
-    text: "#cdd6f4",
-    border: "rgba(203, 166, 247, 0.16)",
+    id: "github-light-colorblind",
+    name: "GitHub Light Colorblind",
+    bg: "#ffffff",
+    cardBg: "rgba(246, 248, 250, 0.95)",
+    accent: "#0969da",
+    text: "#24292f",
+    border: "rgba(208, 215, 222, 0.8)",
   },
   {
-    id: "nord",
-    name: "Nordic Frost",
-    bg: "#2e3440",
-    cardBg: "rgba(46, 52, 64, 0.9)",
-    accent: "#88c0d0",
-    text: "#eceff4",
-    border: "rgba(136, 192, 208, 0.18)",
+    id: "one-dark-pro",
+    name: "One Dark Pro",
+    bg: "#282c34",
+    cardBg: "rgba(33, 37, 43, 0.92)",
+    accent: "#61afef",
+    text: "#abb2bf",
+    border: "rgba(92, 99, 112, 0.5)",
   },
   {
-    id: "monokai",
-    name: "Monokai Pro",
-    bg: "#272822",
-    cardBg: "rgba(39, 40, 34, 0.9)",
-    accent: "#a6e22e",
-    text: "#f8f8f2",
-    border: "rgba(166, 226, 46, 0.18)",
+    id: "one-dark-pro-darker",
+    name: "One Dark Pro Darker",
+    bg: "#1e2227",
+    cardBg: "rgba(24, 28, 33, 0.92)",
+    accent: "#61afef",
+    text: "#abb2bf",
+    border: "rgba(75, 83, 98, 0.5)",
   },
   {
-    id: "solarized",
-    name: "Solarized",
-    bg: "#002b36",
-    cardBg: "rgba(7, 54, 66, 0.92)",
-    accent: "#2aa198",
-    text: "#93a1a1",
-    border: "rgba(42, 161, 152, 0.18)",
+    id: "one-dark-pro-vivid",
+    name: "One Dark Pro Vivid",
+    bg: "#282c34",
+    cardBg: "rgba(33, 37, 43, 0.92)",
+    accent: "#c678dd",
+    text: "#abb2bf",
+    border: "rgba(198, 120, 221, 0.4)",
   },
   {
-    id: "light",
-    name: "Minimal Light",
-    bg: "#f8fafc",
-    cardBg: "rgba(255, 255, 255, 0.95)",
-    accent: "#4f46e5",
-    text: "#0f172a",
-    border: "rgba(0, 0, 0, 0.08)",
-  },
-  {
-    id: "hacker",
-    name: "Hacker Terminal",
-    bg: "#050d08",
-    cardBg: "rgba(10, 24, 15, 0.92)",
-    accent: "#00ff66",
-    text: "#00ff66",
-    border: "rgba(0, 255, 102, 0.25)",
+    id: "one-light-pro",
+    name: "One Light Pro",
+    bg: "#fafafa",
+    cardBg: "rgba(240, 240, 240, 0.95)",
+    accent: "#4078f2",
+    text: "#383a42",
+    border: "rgba(229, 229, 229, 0.8)",
   },
 ];
 
@@ -2316,7 +2591,7 @@ function initThemeManager() {
   const customAccentVal = document.getElementById("custom-accent-val");
   const customTextVal = document.getElementById("custom-text-val");
 
-  let activeThemeId = StorageManager.get("devtab_theme", "obsidian");
+  let activeThemeId = StorageManager.get("devtab_theme", "github-dark");
   let customColors = StorageManager.get("devtab_custom_theme_colors", null);
 
   function applyThemeColors(theme) {
@@ -2340,23 +2615,17 @@ function initThemeManager() {
 
     document.body.classList.remove("light-mode", "hacker-mode");
 
-    if (theme.id === "light") {
+    if (theme.id.includes("light")) {
       document.body.classList.add("light-mode");
       if (toggleIcon) {
         toggleIcon.innerHTML = `<circle cx="12" cy="12" r="5"></circle><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>`;
       }
-      if (toggleLabel) toggleLabel.textContent = "Light Mode";
-    } else if (theme.id === "hacker") {
-      document.body.classList.add("hacker-mode");
-      if (toggleIcon) {
-        toggleIcon.innerHTML = `<polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line>`;
-      }
-      if (toggleLabel) toggleLabel.textContent = "Hacker Mode";
+      if (toggleLabel) toggleLabel.textContent = theme.name;
     } else {
       if (toggleIcon) {
         toggleIcon.innerHTML = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>`;
       }
-      if (toggleLabel) toggleLabel.textContent = "Dark Mode";
+      if (toggleLabel) toggleLabel.textContent = theme.name;
     }
   }
 
@@ -2444,8 +2713,8 @@ function initThemeManager() {
       const customThemeObj = {
         bg: customBg ? customBg.value : "#0d1117",
         cardBg: customCard ? customCard.value : "#161b22",
-        accent: customAccent ? customAccent.value : "#6366f1",
-        text: customText ? customText.value : "#f0f6fc",
+        accent: customAccent ? customAccent.value : "#2f81f7",
+        text: customText ? customText.value : "#c9d1d9",
         border: "rgba(255, 255, 255, 0.12)",
       };
       setTheme("custom", customThemeObj);
@@ -2455,28 +2724,24 @@ function initThemeManager() {
   // Reset theme
   if (resetThemeBtn) {
     resetThemeBtn.addEventListener("click", () => {
-      setTheme("obsidian");
+      setTheme("github-dark");
       if (customBg) customBg.value = "#0d1117";
       if (customCard) customCard.value = "#161b22";
-      if (customAccent) customAccent.value = "#6366f1";
-      if (customText) customText.value = "#f0f6fc";
+      if (customAccent) customAccent.value = "#2f81f7";
+      if (customText) customText.value = "#c9d1d9";
       if (customBgVal) customBgVal.textContent = "#0d1117";
       if (customCardVal) customCardVal.textContent = "#161b22";
-      if (customAccentVal) customAccentVal.textContent = "#6366f1";
-      if (customTextVal) customTextVal.textContent = "#f0f6fc";
+      if (customAccentVal) customAccentVal.textContent = "#2f81f7";
+      if (customTextVal) customTextVal.textContent = "#c9d1d9";
     });
   }
 
-  // Mode Switch in top bar cycles between Dark -> Light -> Hacker
+  // Mode Switch in top bar cycles between all available GitHub Themes
   if (themeToggleBtn) {
     themeToggleBtn.addEventListener("click", () => {
-      if (activeThemeId === "obsidian" || activeThemeId === "custom") {
-        setTheme("light");
-      } else if (activeThemeId === "light") {
-        setTheme("hacker");
-      } else {
-        setTheme("obsidian");
-      }
+      const currentIndex = THEME_PRESETS.findIndex((t) => t.id === activeThemeId);
+      const nextIndex = (currentIndex + 1) % THEME_PRESETS.length;
+      setTheme(THEME_PRESETS[nextIndex].id);
     });
   }
 
@@ -2736,6 +3001,11 @@ function initHotkeys() {
       if (googleDropdown) {
         googleDropdown.classList.add("hidden");
         googleDropdown.style.display = "none";
+      }
+      const utilsDropdown = document.getElementById("dev-utilities-dropdown");
+      if (utilsDropdown) {
+        utilsDropdown.classList.add("hidden");
+        utilsDropdown.style.display = "none";
       }
     }
   });
