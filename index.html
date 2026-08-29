@@ -597,13 +597,6 @@
               >
                 + Manage Links
               </button>
-              <button
-                id="toolbox-toggle-btn"
-                class="text-link-btn"
-                type="button"
-              >
-                Dev Utilities
-              </button>
             </div>
           </div>
 
@@ -741,6 +734,15 @@
           <button class="tab-btn" data-tab="uuid" type="button">
             UUID Gen
           </button>
+          <button class="tab-btn" data-tab="jwt" type="button">
+            JWT Inspector
+          </button>
+          <button class="tab-btn" data-tab="regex" type="button">
+            RegEx Tester
+          </button>
+          <button class="tab-btn" data-tab="timestamp" type="button">
+            Timestamp
+          </button>
           <button class="tab-btn" data-tab="qr" type="button">
             QR Generator
           </button>
@@ -849,6 +851,68 @@
                 <canvas id="qr-canvas" width="200" height="200"></canvas>
               </div>
               <div id="qr-status" class="tool-status"></div>
+            </div>
+          </div>
+
+          <!-- JWT Inspector Tab -->
+          <div class="tab-content" id="tab-jwt">
+            <div class="tool-actions">
+              <button id="jwt-decode-btn" class="btn-primary" type="button">
+                Decode JWT Token
+              </button>
+            </div>
+            <textarea
+              id="jwt-input"
+              placeholder="Paste JWT token here (eyJhbGciOi...)..."
+              rows="4"
+            ></textarea>
+            <div id="jwt-status" class="tool-status"></div>
+            <div class="jwt-outputs-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px;">
+              <div>
+                <label style="font-size: 0.78rem; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 4px;">Header</label>
+                <textarea id="jwt-header-output" readonly rows="7" style="width: 100%; font-family: monospace; font-size: 0.8rem;"></textarea>
+              </div>
+              <div>
+                <label style="font-size: 0.78rem; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 4px;">Payload</label>
+                <textarea id="jwt-payload-output" readonly rows="7" style="width: 100%; font-family: monospace; font-size: 0.8rem;"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- RegEx Tester Tab -->
+          <div class="tab-content" id="tab-regex">
+            <div class="regex-inputs-row" style="display: flex; gap: 8px; margin-bottom: 10px;">
+              <input type="text" id="regex-pattern" placeholder="RegEx pattern (e.g. ([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6}))" style="flex: 1;" />
+              <input type="text" id="regex-flags" placeholder="Flags (gim)" value="gim" style="width: 80px;" />
+              <button id="regex-test-btn" class="btn-primary" type="button">Test Pattern</button>
+            </div>
+            <textarea id="regex-text" placeholder="Enter test string to match..." rows="5"></textarea>
+            <div id="regex-status" class="tool-status"></div>
+            <div id="regex-matches-container" style="margin-top: 10px;">
+              <label style="font-size: 0.78rem; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 4px;">Matches Found:</label>
+              <textarea id="regex-matches" readonly rows="4" style="width: 100%; font-family: monospace; font-size: 0.8rem;"></textarea>
+            </div>
+          </div>
+
+          <!-- Unix Timestamp Tab -->
+          <div class="tab-content" id="tab-timestamp">
+            <div class="timestamp-box" style="padding: 10px; background: rgba(255,255,255,0.03); border-radius: 8px; margin-bottom: 14px;">
+              <span style="font-weight: 600; font-size: 0.85rem;">Current Unix Timestamp: </span>
+              <span id="current-timestamp" style="font-family: monospace; font-weight: 700; color: var(--accent-color); font-size: 1.1rem; margin-left: 8px;"></span>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+              <div>
+                <label style="font-size: 0.8rem; font-weight: 600; display: block; margin-bottom: 6px;">Timestamp -> Date</label>
+                <input type="text" id="ts-input" placeholder="e.g. 1700000000" style="width: 100%; margin-bottom: 8px;" />
+                <button id="ts-convert-btn" class="btn-primary" type="button" style="width: 100%;">Convert</button>
+                <div id="ts-date-output" class="tool-status" style="margin-top: 8px; font-family: monospace;"></div>
+              </div>
+              <div>
+                <label style="font-size: 0.8rem; font-weight: 600; display: block; margin-bottom: 6px;">Date -> Timestamp</label>
+                <input type="datetime-local" id="date-input" style="width: 100%; margin-bottom: 8px;" />
+                <button id="date-convert-btn" class="btn-primary" type="button" style="width: 100%;">Convert</button>
+                <div id="date-ts-output" class="tool-status" style="margin-top: 8px; font-family: monospace;"></div>
+              </div>
             </div>
           </div>
 
