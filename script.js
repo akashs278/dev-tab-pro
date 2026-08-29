@@ -103,7 +103,15 @@ function sanitizeUrl(url) {
   if (/^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/i.test(trimmed)) {
     return "https://" + trimmed;
   }
-  return trimmed.startsWith("http") ? trimmed : "https://" + trimmed;
+  return "#";
+}
+
+function applyAppearance(targetId, mode) {
+  const el = document.getElementById(targetId);
+  if (!el) return;
+  el.classList.remove("appearance-logo-only", "appearance-name-only");
+  if (mode === "logo-only") el.classList.add("appearance-logo-only");
+  if (mode === "name-only") el.classList.add("appearance-name-only");
 }
 
 function getFaviconUrl(url, size = 64) {
@@ -541,6 +549,7 @@ function initAiHubModal() {
   let draggedAiDirIndex = null;
 
   function renderAiSection() {
+    applyAppearance("ai-mini-grid", StorageManager.get("devtab_ai_appearance", "both"));
     // 1. Render on Dashboard Mini Grid
     if (miniGrid) {
       miniGrid.innerHTML = "";
@@ -940,23 +949,23 @@ function initSearchEngine() {
     const isHidden = engineDropdown.classList.contains("hidden");
     if (isHidden) {
       engineDropdown.classList.remove("hidden");
-      engineDropdown.style.display = "flex";
+      engineBtn.classList.add("active");
     } else {
       engineDropdown.classList.add("hidden");
-      engineDropdown.style.display = "none";
+      engineBtn.classList.remove("active");
     }
   });
 
   document.addEventListener("click", () => {
     engineDropdown.classList.add("hidden");
-    engineDropdown.style.display = "none";
+    engineBtn.classList.remove("active");
   });
 
   document.querySelectorAll(".engine-option").forEach((opt) => {
     opt.addEventListener("click", () => {
       setEngine(opt.dataset.engine);
       engineDropdown.classList.add("hidden");
-      engineDropdown.style.display = "none";
+      engineBtn.classList.remove("active");
       searchInput.focus();
     });
   });
@@ -1150,6 +1159,7 @@ function initDevWebsites() {
   const dirGrid = document.getElementById("dev-sites-directory-grid");
 
   function renderDevWebsites() {
+    applyAppearance("dev-websites-container", StorageManager.get("devtab_dev_websites_appearance", "both"));
     // 1. Render on Dashboard
     if (container) {
       container.innerHTML = "";
@@ -1415,6 +1425,7 @@ function initCustomShortcuts() {
   let draggedIndex = null;
 
   function renderShortcuts() {
+    applyAppearance("shortcuts-container", StorageManager.get("devtab_shortcuts_appearance", "both"));
     if (!container) return;
     container.innerHTML = "";
 
@@ -2084,6 +2095,47 @@ function initSettingsAndVisibility() {
       StorageManager.set("devtab_show_" + cfg.id, show ? "true" : "false");
     });
   });
+
+  // Card Item Appearance Settings Controls
+  const shortcutsAppearanceSelect = document.getElementById("shortcuts-appearance-select");
+  const aiAppearanceSelect = document.getElementById("ai-appearance-select");
+  const devAppearanceSelect = document.getElementById("dev-appearance-select");
+
+  if (shortcutsAppearanceSelect) {
+    const currentMode = StorageManager.get("devtab_shortcuts_appearance", "both");
+    shortcutsAppearanceSelect.value = currentMode;
+    applyAppearance("shortcuts-container", currentMode);
+
+    shortcutsAppearanceSelect.addEventListener("change", (e) => {
+      const mode = e.target.value;
+      StorageManager.set("devtab_shortcuts_appearance", mode);
+      applyAppearance("shortcuts-container", mode);
+    });
+  }
+
+  if (aiAppearanceSelect) {
+    const currentMode = StorageManager.get("devtab_ai_appearance", "both");
+    aiAppearanceSelect.value = currentMode;
+    applyAppearance("ai-mini-grid", currentMode);
+
+    aiAppearanceSelect.addEventListener("change", (e) => {
+      const mode = e.target.value;
+      StorageManager.set("devtab_ai_appearance", mode);
+      applyAppearance("ai-mini-grid", mode);
+    });
+  }
+
+  if (devAppearanceSelect) {
+    const currentMode = StorageManager.get("devtab_dev_websites_appearance", "both");
+    devAppearanceSelect.value = currentMode;
+    applyAppearance("dev-websites-container", currentMode);
+
+    devAppearanceSelect.addEventListener("change", (e) => {
+      const mode = e.target.value;
+      StorageManager.set("devtab_dev_websites_appearance", mode);
+      applyAppearance("dev-websites-container", mode);
+    });
+  }
 
   // Backup & Restore
   const exportBtn = document.getElementById("export-settings-btn");
