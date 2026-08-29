@@ -169,10 +169,7 @@ function initTodoList() {
   const todoList = document.getElementById("todo-list");
   const todoCount = document.getElementById("todo-count");
 
-  const defaultTodos = [
-    { text: "Review pull requests", completed: false },
-    { text: "Deploy latest build to staging", completed: true },
-  ];
+  const defaultTodos = [];
 
   let todos = StorageManager.get("devtab_todos", defaultTodos);
   if (!Array.isArray(todos)) todos = defaultTodos;
