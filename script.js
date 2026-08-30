@@ -3141,13 +3141,8 @@ function initTipNotificationToast() {
       content: `Track active localhost ports (<code>:3000</code>, <code>:5173</code>, <code>:8000</code>) and access 9 dev utilities from top menu.`
     },
     {
-<<<<<<<<< Temporary merge branch 1
       title: "Custom Themes & Dragging",
       content: `Switch theme presets in Settings (including GitHub Dark, One Dark Pro, & Light modes), create unlimited Custom Sections, or drag & drop grid cards.`
-=========
-      title: "Hacker Terminal Theme",
-      content: `Switch to <strong>Hacker Terminal Green</strong> mode in Settings, create unlimited Custom Sections, or drag & drop grid cards.`
->>>>>>>>> Temporary merge branch 2
     },
     {
       title: "Custom Shortcuts",
