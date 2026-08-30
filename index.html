@@ -22,7 +22,9 @@
       <div class="top-right-controls">
         <button
           id="theme-toggle"
-          class="btn-control btn-theme-toggle"
+          class="btn-control btn-theme-toggle top-control-item"
+          data-control-id="theme"
+          draggable="true"
           title="Cycle Theme (Dark / Light / Hacker)"
           type="button"
         >
@@ -43,7 +45,7 @@
           <span id="theme-toggle-label">Dark Mode</span>
         </button>
 
-        <div class="dev-utilities-wrapper">
+        <div class="dev-utilities-wrapper top-control-item" data-control-id="dev-utils" draggable="true">
           <button
             id="dev-utilities-btn"
             class="g-waffle-btn dev-utils-btn"
@@ -60,7 +62,7 @@
           </div>
         </div>
 
-        <div class="google-links-wrapper">
+        <div class="google-links-wrapper top-control-item" data-control-id="google-apps" draggable="true">
           <button
             id="google-links-btn"
             class="g-waffle-btn"
@@ -399,7 +401,9 @@
         <!-- GUI Settings Gear Button in Top Right -->
         <button
           id="settings-toggle"
-          class="btn-control btn-gui-settings"
+          class="btn-control btn-gui-settings top-control-item"
+          data-control-id="settings"
+          draggable="true"
           title="GUI Settings (Alt + S)"
           type="button"
         >

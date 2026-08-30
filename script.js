@@ -26,6 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initSettingsAndVisibility();
     initThemeManager();
     initWidgetDragAndDrop();
+    initTopControlsReorder();
     initHotkeys();
   });
 });
@@ -2942,7 +2943,95 @@ function initWidgetDragAndDrop() {
   enableWidgetDrag(rightColumn);
 }
 
-// --- 15. Keyboard Shortcuts & Hotkeys ---
+// --- 15. Top Right Controls Drag & Drop Reordering ---
+function initTopControlsReorder() {
+  const container = document.querySelector(".top-right-controls");
+  if (!container) return;
+
+  const defaultOrder = ["theme", "dev-utils", "google-apps", "settings"];
+  let savedOrder = StorageManager.get("devtab_top_controls_order", defaultOrder);
+
+  if (!Array.isArray(savedOrder) || savedOrder.length === 0) {
+    savedOrder = defaultOrder;
+  }
+
+  // Restore saved order
+  const itemMap = {};
+  container.querySelectorAll(".top-control-item").forEach((el) => {
+    const id = el.dataset.controlId;
+    if (id) itemMap[id] = el;
+  });
+
+  savedOrder.forEach((id) => {
+    if (itemMap[id]) {
+      container.appendChild(itemMap[id]);
+    }
+  });
+
+  // Fallback for any unlisted items
+  Object.keys(itemMap).forEach((id) => {
+    if (!savedOrder.includes(id)) {
+      container.appendChild(itemMap[id]);
+    }
+  });
+
+  let draggedControl = null;
+
+  const items = container.querySelectorAll(".top-control-item");
+  items.forEach((item) => {
+    item.addEventListener("dragstart", (e) => {
+      // Prevent drag if clicking inside an active dropdown
+      const dropdownOpen = item.querySelector(".g-dropdown:not(.hidden)");
+      if (dropdownOpen) {
+        e.preventDefault();
+        return;
+      }
+      draggedControl = item;
+      item.classList.add("top-control-dragging");
+      e.dataTransfer.effectAllowed = "move";
+      e.dataTransfer.setData("text/plain", item.dataset.controlId);
+    });
+
+    item.addEventListener("dragend", () => {
+      if (draggedControl) {
+        draggedControl.classList.remove("top-control-dragging");
+      }
+      items.forEach((el) => el.classList.remove("drag-over"));
+      draggedControl = null;
+
+      // Save new order
+      const newOrder = Array.from(container.querySelectorAll(".top-control-item"))
+        .map((el) => el.dataset.controlId)
+        .filter(Boolean);
+      StorageManager.set("devtab_top_controls_order", newOrder);
+    });
+
+    item.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      if (!draggedControl || draggedControl === item) return;
+
+      item.classList.add("drag-over");
+      const bounding = item.getBoundingClientRect();
+      const offset = e.clientX - bounding.left;
+      if (offset > bounding.width / 2) {
+        container.insertBefore(draggedControl, item.nextSibling);
+      } else {
+        container.insertBefore(draggedControl, item);
+      }
+    });
+
+    item.addEventListener("dragleave", () => {
+      item.classList.remove("drag-over");
+    });
+
+    item.addEventListener("drop", (e) => {
+      e.preventDefault();
+      item.classList.remove("drag-over");
+    });
+  });
+}
+
+// --- 16. Keyboard Shortcuts & Hotkeys ---
 function initHotkeys() {
   document.addEventListener("keydown", (e) => {
     const activeTag = document.activeElement

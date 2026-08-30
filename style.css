@@ -93,6 +93,27 @@ body {
   gap: 12px;
 }
 
+.top-control-item {
+  cursor: grab;
+  user-select: none;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.top-control-item:active {
+  cursor: grabbing;
+}
+
+.top-control-item.top-control-dragging {
+  opacity: 0.4;
+  transform: scale(0.92);
+}
+
+.top-control-item.drag-over {
+  outline: 2px dashed var(--accent-color);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
 .btn-control {
   background: var(--card-bg);
   border: 1px solid var(--border-color);
