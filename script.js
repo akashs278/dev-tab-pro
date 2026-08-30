@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initThemeManager();
     initWidgetDragAndDrop();
     initHotkeys();
+    initTipNotificationToast();
   });
 });
 
@@ -3009,4 +3010,130 @@ function initHotkeys() {
       }
     }
   });
+}
+
+// --- 16. Tip Notification Toast Module ---
+function initTipNotificationToast() {
+  const toast = document.getElementById("tip-notification-toast");
+  const headingEl = document.getElementById("tip-toast-heading");
+  const contentEl = document.getElementById("tip-toast-content");
+  const closeBtn = document.getElementById("close-tip-toast-btn");
+  const nextBtn = document.getElementById("next-tip-btn");
+  const progressInner = document.getElementById("tip-toast-progress");
+  const openHelpBtn = document.getElementById("feature-highlights-btn");
+
+  if (!toast || !headingEl || !contentEl) return;
+
+  const DEV_TAB_TIPS = [
+    {
+      title: "Assigned Hotkeys",
+      content: `Press <kbd>/</kbd> to Search, <kbd>Alt+S</kbd> for Settings, <kbd>Alt+A</kbd> for AI Hub, and <kbd>Alt+Shift+D</kbd> for Dev Mode.`
+    },
+    {
+      title: "Card Appearance Modes",
+      content: `Toggle widget item displays between <strong>Logo & Name</strong>, <strong>Logo Only</strong>, or <strong>Name Only</strong> in Settings ➔ Visibility.`
+    },
+    {
+      title: "Dev Server Monitor",
+      content: `Track active localhost ports (<code>:3000</code>, <code>:5173</code>, <code>:8000</code>) and access 9 dev utilities from top menu.`
+    },
+    {
+      title: "Hacker Terminal Theme",
+      content: `Switch to <strong>Hacker Terminal Green</strong> mode in Settings, create unlimited Custom Sections, or drag & drop grid cards.`
+    },
+    {
+      title: "Custom Shortcuts",
+      content: `Pin your favorite documentation or repo links using <strong>+ Add Shortcut</strong> on the dashboard grid.`
+    }
+  ];
+
+  let currentTipIndex = Math.floor(Math.random() * DEV_TAB_TIPS.length);
+  let progressInterval = null;
+  const DURATION_MS = 10000; // 10 seconds timer
+  let remainingMs = DURATION_MS;
+  let isPaused = false;
+  let startTime = null;
+
+  function renderTip(index) {
+    const tip = DEV_TAB_TIPS[index];
+    headingEl.textContent = tip.title;
+    contentEl.innerHTML = tip.content;
+  }
+
+  function startTimer() {
+    stopTimer();
+    remainingMs = DURATION_MS;
+    startTime = Date.now();
+    isPaused = false;
+
+    if (progressInner) {
+      progressInner.style.width = "100%";
+    }
+
+    progressInterval = setInterval(() => {
+      if (isPaused) return;
+      const elapsed = Date.now() - startTime;
+      remainingMs = Math.max(0, DURATION_MS - elapsed);
+      const pct = (remainingMs / DURATION_MS) * 100;
+      if (progressInner) {
+        progressInner.style.width = pct + "%";
+      }
+
+      if (remainingMs <= 0) {
+        hideToast();
+      }
+    }, 100);
+  }
+
+  function stopTimer() {
+    if (progressInterval) {
+      clearInterval(progressInterval);
+      progressInterval = null;
+    }
+  }
+
+  function showToast() {
+    renderTip(currentTipIndex);
+    toast.classList.remove("hidden");
+    startTimer();
+  }
+
+  function hideToast() {
+    stopTimer();
+    toast.classList.add("hidden");
+  }
+
+  toast.addEventListener("mouseenter", () => {
+    isPaused = true;
+  });
+
+  toast.addEventListener("mouseleave", () => {
+    if (isPaused) {
+      isPaused = false;
+      startTime = Date.now() - (DURATION_MS - remainingMs);
+    }
+  });
+
+  if (closeBtn) {
+    closeBtn.addEventListener("click", hideToast);
+  }
+
+  if (nextBtn) {
+    nextBtn.addEventListener("click", () => {
+      currentTipIndex = (currentTipIndex + 1) % DEV_TAB_TIPS.length;
+      renderTip(currentTipIndex);
+      startTimer();
+    });
+  }
+
+  if (openHelpBtn) {
+    openHelpBtn.addEventListener("click", () => {
+      currentTipIndex = (currentTipIndex + 1) % DEV_TAB_TIPS.length;
+      showToast();
+    });
+  }
+
+  setTimeout(() => {
+    showToast();
+  }, 600);
 }
