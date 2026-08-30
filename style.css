@@ -1639,6 +1639,8 @@ body.light-mode .engine-option:hover {
 
 .setting-row label {
   font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-primary);
 }
 
 .setting-row input[type="checkbox"] {
@@ -1649,13 +1651,29 @@ body.light-mode .engine-option:hover {
 }
 
 .settings-select {
-  background: rgba(0, 0, 0, 0.3);
+  background: var(--card-bg, #161b22);
   border: 1px solid var(--border-color);
   border-radius: 8px;
   color: var(--text-primary);
-  padding: 6px 12px;
+  padding: 6px 14px;
   font-size: 0.88rem;
+  font-weight: 500;
   outline: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.settings-select:hover,
+.settings-select:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px var(--accent-glow, rgba(99, 102, 241, 0.2));
+}
+
+.settings-select option,
+select option {
+  background: #161b22;
+  color: #f8fafc;
+  padding: 8px 12px;
 }
 
 .backup-actions-row {
@@ -2057,6 +2075,12 @@ body.light-mode .color-input-wrapper,
 body.light-mode .settings-select {
   background: #ffffff !important;
   border-color: rgba(0, 0, 0, 0.16) !important;
+  color: #0f172a !important;
+}
+
+body.light-mode .settings-select option,
+body.light-mode select option {
+  background: #ffffff !important;
   color: #0f172a !important;
 }
 
