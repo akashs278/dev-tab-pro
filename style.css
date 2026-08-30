@@ -774,16 +774,20 @@ body {
   top: calc(100% + 8px);
   left: 0;
   width: 240px;
-  background: var(--card-bg);
-  backdrop-filter: blur(20px);
+  background: #161b22;
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
   padding: 8px;
   display: flex;
   flex-direction: column;
   gap: 4px;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7);
   z-index: 99999;
+}
+
+body.light-mode .engine-dropdown {
+  background: #ffffff;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
 }
 
 .engine-option {
@@ -797,8 +801,16 @@ body {
   transition: background 0.2s ease;
 }
 
+.engine-option span {
+  font-weight: 600;
+}
+
 .engine-option:hover {
   background: rgba(255, 255, 255, 0.08);
+}
+
+body.light-mode .engine-option:hover {
+  background: rgba(0, 0, 0, 0.05);
 }
 
 .engine-option.active {
