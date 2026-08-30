@@ -2251,6 +2251,160 @@ body.light-mode .second-hand {
   display: none !important;
 }
 
+/* Lightweight Bottom-Right Tip Notification Toast */
+.tip-toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 99999;
+  pointer-events: auto;
+}
+
+.tip-toast-container.hidden {
+  display: none !important;
+}
+
+.tip-toast-card {
+  width: 310px;
+  max-width: calc(100vw - 32px);
+  background: var(--card-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px var(--border-color);
+  overflow: hidden;
+  position: relative;
+  animation: slideUpToast 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes slideUpToast {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.tip-toast-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.tip-toast-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tip-badge {
+  background: rgba(99, 102, 241, 0.15);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  color: #818cf8;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 5px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.tip-toast-title h4 {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.tip-toast-close {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0 2px;
+  transition: color 0.2s ease;
+}
+
+.tip-toast-close:hover {
+  color: var(--text-primary);
+}
+
+.tip-toast-body {
+  padding: 10px 12px;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.tip-toast-body kbd {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-family: "Fira Code", monospace;
+  font-size: 0.7rem;
+  color: var(--accent-color);
+  font-weight: 700;
+}
+
+.tip-toast-body code {
+  background: rgba(0, 0, 0, 0.25);
+  padding: 1px 4px;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  color: #10b981;
+}
+
+.tip-toast-footer {
+  padding: 4px 12px 8px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.tip-next-btn {
+  background: none;
+  border: none;
+  color: var(--accent-color);
+  font-size: 0.74rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.tip-next-btn:hover {
+  text-decoration: underline;
+  opacity: 0.85;
+}
+
+.tip-toast-progress-bar {
+  width: 100%;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.tip-progress-inner {
+  height: 100%;
+  width: 100%;
+  background: var(--accent-color);
+  transform-origin: left center;
+  transition: width 0.1s linear;
+}
+
+.dont-show-checkbox-label input {
+  accent-color: var(--accent-color);
+}
+
 #dev-websites-container.appearance-name-only .dev-platform-card .platform-info small {
   display: none !important;
 }
