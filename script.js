@@ -616,19 +616,15 @@ function initDevUtilities() {
 
   utilsBtn.addEventListener("click", (e) => {
     e.stopPropagation();
-    const googleDropdown = document.getElementById("google-links-dropdown");
-    if (googleDropdown) {
-      googleDropdown.classList.add("hidden");
-      googleDropdown.style.display = "none";
-    }
-
-    const isHidden = utilsDropdown.classList.contains("hidden");
-    if (isHidden) {
-      utilsDropdown.classList.remove("hidden");
-      utilsDropdown.style.display = "grid";
-    } else {
-      utilsDropdown.classList.add("hidden");
-      utilsDropdown.style.display = "none";
+    const modal = document.getElementById("toolbox-modal");
+    if (modal) {
+      const isHidden =
+        modal.classList.contains("hidden") || modal.style.display === "none";
+      if (isHidden) {
+        openModal(modal);
+      } else {
+        closeAllModals();
+      }
     }
   });
 
@@ -1704,6 +1700,19 @@ function initDevToolbox() {
   // Toolbox Tab Navigation
   const tabBtns = document.querySelectorAll(".toolbox-tabs .tab-btn");
   const tabContents = document.querySelectorAll(".toolbox-body .tab-content");
+  const panelTitleEl = document.getElementById("toolbox-panel-title");
+
+  const TOOLBOX_TITLES = {
+    json: "JSON Formatter & Minifier",
+    base64: "Base64 Encoder & Decoder",
+    url: "URL Encoder & Decoder",
+    uuid: "UUID v4 Generator",
+    jwt: "JWT Token Inspector",
+    regex: "RegEx Pattern Tester",
+    timestamp: "Unix Timestamp Converter",
+    qr: "QR Code Generator",
+    cheatsheet: "Git & Docker Cheatsheets",
+  };
 
   tabBtns.forEach((btn) => {
     btn.addEventListener("click", () => {
@@ -1711,9 +1720,14 @@ function initDevToolbox() {
       tabContents.forEach((c) => c.classList.remove("active"));
 
       btn.classList.add("active");
-      const targetId = "tab-" + btn.dataset.tab;
+      const tabKey = btn.dataset.tab;
+      const targetId = "tab-" + tabKey;
       const targetEl = document.getElementById(targetId);
       if (targetEl) targetEl.classList.add("active");
+
+      if (panelTitleEl && TOOLBOX_TITLES[tabKey]) {
+        panelTitleEl.textContent = TOOLBOX_TITLES[tabKey];
+      }
     });
   });
 

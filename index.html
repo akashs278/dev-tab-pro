@@ -712,230 +712,262 @@
       </div>
     </div>
 
-    <!-- Developer Utility Toolbox Modal Drawer -->
+    <!-- Developer Utility Toolbox Split GUI Modal -->
     <div id="toolbox-modal" class="modal-overlay hidden">
-      <div class="modal-card wide-modal">
-        <div class="modal-header">
-          <h2>Developer Utility Toolbox</h2>
-          <button class="close-modal-btn" id="close-toolbox" type="button">
-            &times;
-          </button>
-        </div>
-        <div class="toolbox-tabs">
-          <button class="tab-btn active" data-tab="json" type="button">
-            JSON Formatter
-          </button>
-          <button class="tab-btn" data-tab="base64" type="button">
-            Base64
-          </button>
-          <button class="tab-btn" data-tab="url" type="button">
-            URL Encode
-          </button>
-          <button class="tab-btn" data-tab="uuid" type="button">
-            UUID Gen
-          </button>
-          <button class="tab-btn" data-tab="jwt" type="button">
-            JWT Inspector
-          </button>
-          <button class="tab-btn" data-tab="regex" type="button">
-            RegEx Tester
-          </button>
-          <button class="tab-btn" data-tab="timestamp" type="button">
-            Timestamp
-          </button>
-          <button class="tab-btn" data-tab="qr" type="button">
-            QR Generator
-          </button>
-          <button class="tab-btn" data-tab="cheatsheet" type="button">
-            Dev Cheatsheet
-          </button>
-        </div>
-
-        <div class="toolbox-body">
-          <!-- JSON Tab -->
-          <div class="tab-content active" id="tab-json">
-            <div class="tool-actions">
-              <button id="json-format-btn" class="btn-primary" type="button">
-                Format & Validate
-              </button>
-              <button id="json-minify-btn" class="btn-secondary" type="button">
-                Minify
-              </button>
-              <button id="json-clear-btn" class="btn-secondary" type="button">
-                Clear
-              </button>
-            </div>
-            <textarea
-              id="json-input"
-              placeholder="Paste unformatted JSON here..."
-              rows="10"
-            ></textarea>
-            <div id="json-status" class="tool-status"></div>
+      <div class="modal-card settings-split-modal dev-toolbox-split-modal">
+        <!-- Left Sidebar Navigation -->
+        <aside class="settings-sidebar">
+          <div class="settings-sidebar-header">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="16 18 22 12 16 6"></polyline>
+              <polyline points="8 6 2 12 8 18"></polyline>
+            </svg>
+            <span>Dev Utilities</span>
           </div>
 
-          <!-- Base64 Tab -->
-          <div class="tab-content" id="tab-base64">
-            <div class="tool-actions">
-              <button id="b64-encode-btn" class="btn-primary" type="button">
-                Encode
-              </button>
-              <button id="b64-decode-btn" class="btn-secondary" type="button">
-                Decode
-              </button>
-            </div>
-            <textarea
-              id="b64-input"
-              placeholder="Enter text to Encode/Decode..."
-              rows="10"
-            ></textarea>
+          <nav class="settings-nav toolbox-tabs">
+            <button class="settings-nav-item tab-btn active" data-tab="json" type="button">
+              <span class="nav-icon-badge bg-json">{ }</span>
+              <span class="nav-label">JSON Formatter</span>
+            </button>
+
+            <button class="settings-nav-item tab-btn" data-tab="base64" type="button">
+              <span class="nav-icon-badge bg-base64">64</span>
+              <span class="nav-label">Base64 Encoder</span>
+            </button>
+
+            <button class="settings-nav-item tab-btn" data-tab="url" type="button">
+              <span class="nav-icon-badge bg-url">%</span>
+              <span class="nav-label">URL Encoder</span>
+            </button>
+
+            <button class="settings-nav-item tab-btn" data-tab="uuid" type="button">
+              <span class="nav-icon-badge bg-hash">#</span>
+              <span class="nav-label">UUID Generator</span>
+            </button>
+
+            <button class="settings-nav-item tab-btn" data-tab="jwt" type="button">
+              <span class="nav-icon-badge bg-jwt">JWT</span>
+              <span class="nav-label">JWT Inspector</span>
+            </button>
+
+            <button class="settings-nav-item tab-btn" data-tab="regex" type="button">
+              <span class="nav-icon-badge bg-regex">.*</span>
+              <span class="nav-label">RegEx Tester</span>
+            </button>
+
+            <button class="settings-nav-item tab-btn" data-tab="timestamp" type="button">
+              <span class="nav-icon-badge bg-timestamp">⏱</span>
+              <span class="nav-label">Unix Timestamp</span>
+            </button>
+
+            <button class="settings-nav-item tab-btn" data-tab="qr" type="button">
+              <span class="nav-icon-badge bg-color">QR</span>
+              <span class="nav-label">QR Generator</span>
+            </button>
+
+            <button class="settings-nav-item tab-btn" data-tab="cheatsheet" type="button">
+              <span class="nav-icon-badge bg-markdown">⚡</span>
+              <span class="nav-label">Dev Cheatsheets</span>
+            </button>
+          </nav>
+        </aside>
+
+        <!-- Right Main Panel Content -->
+        <section class="settings-content-area">
+          <div class="modal-header">
+            <h2 id="toolbox-panel-title">JSON Formatter & Minifier</h2>
+            <button class="close-modal-btn" id="close-toolbox" type="button">
+              &times;
+            </button>
           </div>
 
-          <!-- URL Encode Tab -->
-          <div class="tab-content" id="tab-url">
-            <div class="tool-actions">
-              <button id="url-encode-btn" class="btn-primary" type="button">
-                URL Encode
-              </button>
-              <button id="url-decode-btn" class="btn-secondary" type="button">
-                URL Decode
-              </button>
-            </div>
-            <textarea
-              id="url-input"
-              placeholder="Enter URL or string..."
-              rows="10"
-            ></textarea>
-          </div>
-
-          <!-- UUID Tab -->
-          <div class="tab-content" id="tab-uuid">
-            <div class="uuid-tool-box">
-              <button id="generate-uuid-btn" class="btn-primary" type="button">
-                Generate UUID v4
-              </button>
-              <div class="uuid-result-row">
-                <input
-                  type="text"
-                  id="uuid-output"
-                  readonly
-                  placeholder="Click generate button..."
-                />
-                <button id="copy-uuid-btn" class="btn-secondary" type="button">
-                  Copy
+          <div class="settings-panels-container toolbox-body">
+            <!-- JSON Tab -->
+            <div class="tab-content active" id="tab-json">
+              <div class="tool-actions">
+                <button id="json-format-btn" class="btn-primary" type="button">
+                  Format & Validate
+                </button>
+                <button id="json-minify-btn" class="btn-secondary" type="button">
+                  Minify
+                </button>
+                <button id="json-clear-btn" class="btn-secondary" type="button">
+                  Clear
                 </button>
               </div>
+              <textarea
+                id="json-input"
+                placeholder="Paste unformatted JSON here..."
+                rows="10"
+              ></textarea>
+              <div id="json-status" class="tool-status"></div>
             </div>
-          </div>
 
-          <!-- QR Code Generator Tab -->
-          <div class="tab-content" id="tab-qr">
-            <div class="tool-actions">
-              <button id="generate-qr-btn" class="btn-primary" type="button">
-                Generate QR Code
-              </button>
-              <button id="download-qr-btn" class="btn-secondary" type="button">
-                Download PNG
-              </button>
-            </div>
-            <div class="form-group" style="margin-top: 14px">
-              <label for="qr-input">URL or Text Payload</label>
-              <input
-                type="text"
-                id="qr-input"
-                placeholder="Enter URL or text (e.g. https://github.com)..."
-                value="https://github.com"
-              />
-            </div>
-            <div class="qr-output-container">
-              <div id="qr-canvas-wrapper" class="qr-canvas-wrapper">
-                <canvas id="qr-canvas" width="200" height="200"></canvas>
+            <!-- Base64 Tab -->
+            <div class="tab-content" id="tab-base64">
+              <div class="tool-actions">
+                <button id="b64-encode-btn" class="btn-primary" type="button">
+                  Encode
+                </button>
+                <button id="b64-decode-btn" class="btn-secondary" type="button">
+                  Decode
+                </button>
               </div>
-              <div id="qr-status" class="tool-status"></div>
+              <textarea
+                id="b64-input"
+                placeholder="Enter text to Encode/Decode..."
+                rows="10"
+              ></textarea>
             </div>
-          </div>
 
-          <!-- JWT Inspector Tab -->
-          <div class="tab-content" id="tab-jwt">
-            <div class="tool-actions">
-              <button id="jwt-decode-btn" class="btn-primary" type="button">
-                Decode JWT Token
-              </button>
-            </div>
-            <textarea
-              id="jwt-input"
-              placeholder="Paste JWT token here (eyJhbGciOi...)..."
-              rows="4"
-            ></textarea>
-            <div id="jwt-status" class="tool-status"></div>
-            <div class="jwt-outputs-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px;">
-              <div>
-                <label style="font-size: 0.78rem; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 4px;">Header</label>
-                <textarea id="jwt-header-output" readonly rows="7" style="width: 100%; font-family: monospace; font-size: 0.8rem;"></textarea>
+            <!-- URL Encode Tab -->
+            <div class="tab-content" id="tab-url">
+              <div class="tool-actions">
+                <button id="url-encode-btn" class="btn-primary" type="button">
+                  URL Encode
+                </button>
+                <button id="url-decode-btn" class="btn-secondary" type="button">
+                  URL Decode
+                </button>
               </div>
-              <div>
-                <label style="font-size: 0.78rem; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 4px;">Payload</label>
-                <textarea id="jwt-payload-output" readonly rows="7" style="width: 100%; font-family: monospace; font-size: 0.8rem;"></textarea>
-              </div>
+              <textarea
+                id="url-input"
+                placeholder="Enter URL or string..."
+                rows="10"
+              ></textarea>
             </div>
-          </div>
 
-          <!-- RegEx Tester Tab -->
-          <div class="tab-content" id="tab-regex">
-            <div class="regex-inputs-row" style="display: flex; gap: 8px; margin-bottom: 10px;">
-              <input type="text" id="regex-pattern" placeholder="RegEx pattern (e.g. ([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6}))" style="flex: 1;" />
-              <input type="text" id="regex-flags" placeholder="Flags (gim)" value="gim" style="width: 80px;" />
-              <button id="regex-test-btn" class="btn-primary" type="button">Test Pattern</button>
+            <!-- UUID Tab -->
+            <div class="tab-content" id="tab-uuid">
+              <div class="uuid-tool-box">
+                <button id="generate-uuid-btn" class="btn-primary" type="button">
+                  Generate UUID v4
+                </button>
+                <div class="uuid-result-row">
+                  <input
+                    type="text"
+                    id="uuid-output"
+                    readonly
+                    placeholder="Click generate button..."
+                  />
+                  <button id="copy-uuid-btn" class="btn-secondary" type="button">
+                    Copy
+                  </button>
+                </div>
+              </div>
             </div>
-            <textarea id="regex-text" placeholder="Enter test string to match..." rows="5"></textarea>
-            <div id="regex-status" class="tool-status"></div>
-            <div id="regex-matches-container" style="margin-top: 10px;">
-              <label style="font-size: 0.78rem; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 4px;">Matches Found:</label>
-              <textarea id="regex-matches" readonly rows="4" style="width: 100%; font-family: monospace; font-size: 0.8rem;"></textarea>
-            </div>
-          </div>
 
-          <!-- Unix Timestamp Tab -->
-          <div class="tab-content" id="tab-timestamp">
-            <div class="timestamp-box" style="padding: 10px; background: rgba(255,255,255,0.03); border-radius: 8px; margin-bottom: 14px;">
-              <span style="font-weight: 600; font-size: 0.85rem;">Current Unix Timestamp: </span>
-              <span id="current-timestamp" style="font-family: monospace; font-weight: 700; color: var(--accent-color); font-size: 1.1rem; margin-left: 8px;"></span>
-            </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
-              <div>
-                <label style="font-size: 0.8rem; font-weight: 600; display: block; margin-bottom: 6px;">Timestamp -> Date</label>
-                <input type="text" id="ts-input" placeholder="e.g. 1700000000" style="width: 100%; margin-bottom: 8px;" />
-                <button id="ts-convert-btn" class="btn-primary" type="button" style="width: 100%;">Convert</button>
-                <div id="ts-date-output" class="tool-status" style="margin-top: 8px; font-family: monospace;"></div>
+            <!-- QR Code Generator Tab -->
+            <div class="tab-content" id="tab-qr">
+              <div class="tool-actions">
+                <button id="generate-qr-btn" class="btn-primary" type="button">
+                  Generate QR Code
+                </button>
+                <button id="download-qr-btn" class="btn-secondary" type="button">
+                  Download PNG
+                </button>
               </div>
-              <div>
-                <label style="font-size: 0.8rem; font-weight: 600; display: block; margin-bottom: 6px;">Date -> Timestamp</label>
-                <input type="datetime-local" id="date-input" style="width: 100%; margin-bottom: 8px;" />
-                <button id="date-convert-btn" class="btn-primary" type="button" style="width: 100%;">Convert</button>
-                <div id="date-ts-output" class="tool-status" style="margin-top: 8px; font-family: monospace;"></div>
+              <div class="form-group" style="margin-top: 14px">
+                <label for="qr-input">URL or Text Payload</label>
+                <input
+                  type="text"
+                  id="qr-input"
+                  placeholder="Enter URL or text (e.g. https://github.com)..."
+                  value="https://github.com"
+                />
+              </div>
+              <div class="qr-output-container">
+                <div id="qr-canvas-wrapper" class="qr-canvas-wrapper">
+                  <canvas id="qr-canvas" width="200" height="200"></canvas>
+                </div>
+                <div id="qr-status" class="tool-status"></div>
               </div>
             </div>
-          </div>
 
-          <!-- Dev Cheatsheet Tab -->
-          <div class="tab-content" id="tab-cheatsheet">
-            <div class="cheatsheet-grid">
-              <div class="cheat-card">
-                <h4>Git Quick Commands</h4>
-                <code>git status</code> - Check status<br />
-                <code>git checkout -b feature</code> - New branch<br />
-                <code>git reset --soft HEAD~1</code> - Undo commit<br />
-                <code>git log --oneline --graph</code> - Clean log
+            <!-- JWT Inspector Tab -->
+            <div class="tab-content" id="tab-jwt">
+              <div class="tool-actions">
+                <button id="jwt-decode-btn" class="btn-primary" type="button">
+                  Decode JWT Token
+                </button>
               </div>
-              <div class="cheat-card">
-                <h4>Docker Commands</h4>
-                <code>docker ps -a</code> - List containers<br />
-                <code>docker-compose up -d</code> - Run background<br />
-                <code>docker exec -it [id] sh</code> - Shell inside<br />
-                <code>docker system prune -a</code> - Clean space
+              <textarea
+                id="jwt-input"
+                placeholder="Paste JWT token here (eyJhbGciOi...)..."
+                rows="4"
+              ></textarea>
+              <div id="jwt-status" class="tool-status"></div>
+              <div class="jwt-outputs-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px;">
+                <div>
+                  <label style="font-size: 0.78rem; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 4px;">Header</label>
+                  <textarea id="jwt-header-output" readonly rows="7" style="width: 100%; font-family: monospace; font-size: 0.8rem;"></textarea>
+                </div>
+                <div>
+                  <label style="font-size: 0.78rem; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 4px;">Payload</label>
+                  <textarea id="jwt-payload-output" readonly rows="7" style="width: 100%; font-family: monospace; font-size: 0.8rem;"></textarea>
+                </div>
+              </div>
+            </div>
+
+            <!-- RegEx Tester Tab -->
+            <div class="tab-content" id="tab-regex">
+              <div class="regex-inputs-row" style="display: flex; gap: 8px; margin-bottom: 10px;">
+                <input type="text" id="regex-pattern" placeholder="RegEx pattern (e.g. ([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6}))" style="flex: 1;" />
+                <input type="text" id="regex-flags" placeholder="Flags (gim)" value="gim" style="width: 80px;" />
+                <button id="regex-test-btn" class="btn-primary" type="button">Test Pattern</button>
+              </div>
+              <textarea id="regex-text" placeholder="Enter test string to match..." rows="5"></textarea>
+              <div id="regex-status" class="tool-status"></div>
+              <div id="regex-matches-container" style="margin-top: 10px;">
+                <label style="font-size: 0.78rem; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 4px;">Matches Found:</label>
+                <textarea id="regex-matches" readonly rows="4" style="width: 100%; font-family: monospace; font-size: 0.8rem;"></textarea>
+              </div>
+            </div>
+
+            <!-- Unix Timestamp Tab -->
+            <div class="tab-content" id="tab-timestamp">
+              <div class="timestamp-box" style="padding: 10px; background: rgba(255,255,255,0.03); border-radius: 8px; margin-bottom: 14px;">
+                <span style="font-weight: 600; font-size: 0.85rem;">Current Unix Timestamp: </span>
+                <span id="current-timestamp" style="font-family: monospace; font-weight: 700; color: var(--accent-color); font-size: 1.1rem; margin-left: 8px;"></span>
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                <div>
+                  <label style="font-size: 0.8rem; font-weight: 600; display: block; margin-bottom: 6px;">Timestamp -> Date</label>
+                  <input type="text" id="ts-input" placeholder="e.g. 1700000000" style="width: 100%; margin-bottom: 8px;" />
+                  <button id="ts-convert-btn" class="btn-primary" type="button" style="width: 100%;">Convert</button>
+                  <div id="ts-date-output" class="tool-status" style="margin-top: 8px; font-family: monospace;"></div>
+                </div>
+                <div>
+                  <label style="font-size: 0.8rem; font-weight: 600; display: block; margin-bottom: 6px;">Date -> Timestamp</label>
+                  <input type="datetime-local" id="date-input" style="width: 100%; margin-bottom: 8px;" />
+                  <button id="date-convert-btn" class="btn-primary" type="button" style="width: 100%;">Convert</button>
+                  <div id="date-ts-output" class="tool-status" style="margin-top: 8px; font-family: monospace;"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Dev Cheatsheet Tab -->
+            <div class="tab-content" id="tab-cheatsheet">
+              <div class="cheatsheet-grid">
+                <div class="cheat-card">
+                  <h4>Git Quick Commands</h4>
+                  <code>git status</code> - Check status<br />
+                  <code>git checkout -b feature</code> - New branch<br />
+                  <code>git reset --soft HEAD~1</code> - Undo commit<br />
+                  <code>git log --oneline --graph</code> - Clean log
+                </div>
+                <div class="cheat-card">
+                  <h4>Docker Commands</h4>
+                  <code>docker ps -a</code> - List containers<br />
+                  <code>docker-compose up -d</code> - Run background<br />
+                  <code>docker exec -it [id] sh</code> - Shell inside<br />
+                  <code>docker system prune -a</code> - Clean space
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </section>
       </div>
     </div>
 
