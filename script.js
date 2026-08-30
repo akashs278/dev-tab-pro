@@ -495,24 +495,31 @@ function initGoogleLinks() {
   googleBtn.addEventListener("click", (e) => {
     e.stopPropagation();
     const utilsDropdown = document.getElementById("dev-utilities-dropdown");
+    const utilsBtn = document.getElementById("dev-utilities-btn");
     if (utilsDropdown) {
       utilsDropdown.classList.add("hidden");
       utilsDropdown.style.display = "none";
+    }
+    if (utilsBtn) {
+      utilsBtn.classList.remove("active");
     }
 
     const isHidden = googleDropdown.classList.contains("hidden");
     if (isHidden) {
       googleDropdown.classList.remove("hidden");
       googleDropdown.style.display = "grid";
+      googleBtn.classList.add("active");
     } else {
       googleDropdown.classList.add("hidden");
       googleDropdown.style.display = "none";
+      googleBtn.classList.remove("active");
     }
   });
 
   document.addEventListener("click", () => {
     googleDropdown.classList.add("hidden");
     googleDropdown.style.display = "none";
+    googleBtn.classList.remove("active");
   });
 
   renderGApps();
@@ -568,12 +575,15 @@ function initDevUtilities() {
         e.stopPropagation();
         utilsDropdown.classList.add("hidden");
         utilsDropdown.style.display = "none";
+        utilsBtn.classList.remove("active");
 
         // Open toolbox modal to the selected tool tab
         const modal = document.getElementById("toolbox-modal");
         if (modal) {
           openModal(modal);
-          const tabBtn = document.querySelector(`.toolbox-tabs .tab-btn[data-tab="${util.id}"]`);
+          const tabBtn =
+            document.querySelector(`.settings-sidebar .nav-item[data-tab="${util.id}"]`) ||
+            document.querySelector(`.toolbox-tabs .tab-btn[data-tab="${util.id}"]`);
           if (tabBtn) tabBtn.click();
         }
       });
@@ -618,21 +628,34 @@ function initDevUtilities() {
 
   utilsBtn.addEventListener("click", (e) => {
     e.stopPropagation();
-    const modal = document.getElementById("toolbox-modal");
-    if (modal) {
-      const isHidden =
-        modal.classList.contains("hidden") || modal.style.display === "none";
-      if (isHidden) {
-        openModal(modal);
-      } else {
-        closeAllModals();
-      }
+
+    // Close Google Links dropdown if open
+    const googleDropdown = document.getElementById("google-links-dropdown");
+    const googleBtn = document.getElementById("google-links-btn");
+    if (googleDropdown) {
+      googleDropdown.classList.add("hidden");
+      googleDropdown.style.display = "none";
+    }
+    if (googleBtn) {
+      googleBtn.classList.remove("active");
+    }
+
+    const isHidden = utilsDropdown.classList.contains("hidden");
+    if (isHidden) {
+      utilsDropdown.classList.remove("hidden");
+      utilsDropdown.style.display = "grid";
+      utilsBtn.classList.add("active");
+    } else {
+      utilsDropdown.classList.add("hidden");
+      utilsDropdown.style.display = "none";
+      utilsBtn.classList.remove("active");
     }
   });
 
   document.addEventListener("click", () => {
     utilsDropdown.classList.add("hidden");
     utilsDropdown.style.display = "none";
+    utilsBtn.classList.remove("active");
   });
 
   renderDevUtils();
