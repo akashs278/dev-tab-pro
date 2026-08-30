@@ -396,6 +396,29 @@
           </div>
         </div>
 
+        <!-- Feature Highlights & Hotkeys Help Button -->
+        <button
+          id="feature-highlights-btn"
+          class="btn-control"
+          title="Feature Highlights & Hotkeys"
+          type="button"
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+        </button>
+
         <!-- GUI Settings Gear Button in Top Right -->
         <button
           id="settings-toggle"
@@ -550,23 +573,23 @@
                 data-engine="google"
                 data-label="Google"
               >
-                <span>1. Google</span> <small>Default</small>
+                <span>Google</span> <small>Default</small>
               </div>
               <div class="engine-option" data-engine="brave" data-label="Brave">
-                <span>2. Brave</span> <small>b query</small>
+                <span>Brave</span> <small>b query</small>
               </div>
               <div
                 class="engine-option"
                 data-engine="youtube"
                 data-label="YouTube"
               >
-                <span>3. YouTube</span> <small>yt query</small>
+                <span>YouTube</span> <small>yt query</small>
               </div>
               <div class="engine-option" data-engine="duck" data-label="DuckDuckGo">
-                <span>4. DuckDuckGo</span> <small>duck query</small>
+                <span>DuckDuckGo</span> <small>duck query</small>
               </div>
               <div class="engine-option" data-engine="bing" data-label="Bing">
-                <span>5. Bing</span> <small>bing query</small>
+                <span>Bing</span> <small>bing query</small>
               </div>
             </div>
           </form>
@@ -1495,6 +1518,30 @@
         <small class="onboarding-tip"
           >You can change this anytime later in Settings.</small
         >
+      </div>
+    </div>
+
+    <!-- Lightweight Bottom-Right Tip Notification Toast -->
+    <div id="tip-notification-toast" class="tip-toast-container hidden">
+      <div class="tip-toast-card">
+        <div class="tip-toast-header">
+          <div class="tip-toast-title">
+            <span class="tip-badge">💡 Tip</span>
+            <h4 id="tip-toast-heading">Quick Hotkeys</h4>
+          </div>
+          <button id="close-tip-toast-btn" class="tip-toast-close" type="button" title="Close Tip">
+            &times;
+          </button>
+        </div>
+        <div class="tip-toast-body" id="tip-toast-content">
+          <!-- Dynamic tip content injected here -->
+        </div>
+        <div class="tip-toast-footer">
+          <button id="next-tip-btn" class="tip-next-btn" type="button">Next Tip ➔</button>
+        </div>
+        <div class="tip-toast-progress-bar">
+          <div id="tip-toast-progress" class="tip-progress-inner"></div>
+        </div>
       </div>
     </div>
 

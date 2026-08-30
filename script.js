@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initThemeManager();
     initWidgetDragAndDrop();
     initHotkeys();
+    initTipNotificationToast();
   });
 });
 
