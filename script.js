@@ -26,6 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initSettingsAndVisibility();
     initThemeManager();
     initWidgetDragAndDrop();
+    initTopControlsReorder();
     initHotkeys();
   });
 });
@@ -616,19 +617,15 @@ function initDevUtilities() {
 
   utilsBtn.addEventListener("click", (e) => {
     e.stopPropagation();
-    const googleDropdown = document.getElementById("google-links-dropdown");
-    if (googleDropdown) {
-      googleDropdown.classList.add("hidden");
-      googleDropdown.style.display = "none";
-    }
-
-    const isHidden = utilsDropdown.classList.contains("hidden");
-    if (isHidden) {
-      utilsDropdown.classList.remove("hidden");
-      utilsDropdown.style.display = "grid";
-    } else {
-      utilsDropdown.classList.add("hidden");
-      utilsDropdown.style.display = "none";
+    const modal = document.getElementById("toolbox-modal");
+    if (modal) {
+      const isHidden =
+        modal.classList.contains("hidden") || modal.style.display === "none";
+      if (isHidden) {
+        openModal(modal);
+      } else {
+        closeAllModals();
+      }
     }
   });
 
@@ -1704,6 +1701,19 @@ function initDevToolbox() {
   // Toolbox Tab Navigation
   const tabBtns = document.querySelectorAll(".toolbox-tabs .tab-btn");
   const tabContents = document.querySelectorAll(".toolbox-body .tab-content");
+  const panelTitleEl = document.getElementById("toolbox-panel-title");
+
+  const TOOLBOX_TITLES = {
+    json: "JSON Formatter & Minifier",
+    base64: "Base64 Encoder & Decoder",
+    url: "URL Encoder & Decoder",
+    uuid: "UUID v4 Generator",
+    jwt: "JWT Token Inspector",
+    regex: "RegEx Pattern Tester",
+    timestamp: "Unix Timestamp Converter",
+    qr: "QR Code Generator",
+    cheatsheet: "Git & Docker Cheatsheets",
+  };
 
   tabBtns.forEach((btn) => {
     btn.addEventListener("click", () => {
@@ -1711,9 +1721,14 @@ function initDevToolbox() {
       tabContents.forEach((c) => c.classList.remove("active"));
 
       btn.classList.add("active");
-      const targetId = "tab-" + btn.dataset.tab;
+      const tabKey = btn.dataset.tab;
+      const targetId = "tab-" + tabKey;
       const targetEl = document.getElementById(targetId);
       if (targetEl) targetEl.classList.add("active");
+
+      if (panelTitleEl && TOOLBOX_TITLES[tabKey]) {
+        panelTitleEl.textContent = TOOLBOX_TITLES[tabKey];
+      }
     });
   });
 
@@ -2928,7 +2943,95 @@ function initWidgetDragAndDrop() {
   enableWidgetDrag(rightColumn);
 }
 
-// --- 15. Keyboard Shortcuts & Hotkeys ---
+// --- 15. Top Right Controls Drag & Drop Reordering ---
+function initTopControlsReorder() {
+  const container = document.querySelector(".top-right-controls");
+  if (!container) return;
+
+  const defaultOrder = ["theme", "dev-utils", "google-apps", "settings"];
+  let savedOrder = StorageManager.get("devtab_top_controls_order", defaultOrder);
+
+  if (!Array.isArray(savedOrder) || savedOrder.length === 0) {
+    savedOrder = defaultOrder;
+  }
+
+  // Restore saved order
+  const itemMap = {};
+  container.querySelectorAll(".top-control-item").forEach((el) => {
+    const id = el.dataset.controlId;
+    if (id) itemMap[id] = el;
+  });
+
+  savedOrder.forEach((id) => {
+    if (itemMap[id]) {
+      container.appendChild(itemMap[id]);
+    }
+  });
+
+  // Fallback for any unlisted items
+  Object.keys(itemMap).forEach((id) => {
+    if (!savedOrder.includes(id)) {
+      container.appendChild(itemMap[id]);
+    }
+  });
+
+  let draggedControl = null;
+
+  const items = container.querySelectorAll(".top-control-item");
+  items.forEach((item) => {
+    item.addEventListener("dragstart", (e) => {
+      // Prevent drag if clicking inside an active dropdown
+      const dropdownOpen = item.querySelector(".g-dropdown:not(.hidden)");
+      if (dropdownOpen) {
+        e.preventDefault();
+        return;
+      }
+      draggedControl = item;
+      item.classList.add("top-control-dragging");
+      e.dataTransfer.effectAllowed = "move";
+      e.dataTransfer.setData("text/plain", item.dataset.controlId);
+    });
+
+    item.addEventListener("dragend", () => {
+      if (draggedControl) {
+        draggedControl.classList.remove("top-control-dragging");
+      }
+      items.forEach((el) => el.classList.remove("drag-over"));
+      draggedControl = null;
+
+      // Save new order
+      const newOrder = Array.from(container.querySelectorAll(".top-control-item"))
+        .map((el) => el.dataset.controlId)
+        .filter(Boolean);
+      StorageManager.set("devtab_top_controls_order", newOrder);
+    });
+
+    item.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      if (!draggedControl || draggedControl === item) return;
+
+      item.classList.add("drag-over");
+      const bounding = item.getBoundingClientRect();
+      const offset = e.clientX - bounding.left;
+      if (offset > bounding.width / 2) {
+        container.insertBefore(draggedControl, item.nextSibling);
+      } else {
+        container.insertBefore(draggedControl, item);
+      }
+    });
+
+    item.addEventListener("dragleave", () => {
+      item.classList.remove("drag-over");
+    });
+
+    item.addEventListener("drop", (e) => {
+      e.preventDefault();
+      item.classList.remove("drag-over");
+    });
+  });
+}
+
+// --- 16. Keyboard Shortcuts & Hotkeys ---
 function initHotkeys() {
   document.addEventListener("keydown", (e) => {
     const activeTag = document.activeElement
