@@ -2105,70 +2105,7 @@ body.light-mode .second-hand {
   background: #0284c7 !important;
 }
 
-/* ==========================================================================
-   Hacker Terminal Vibe Theme Overrides
-   ========================================================================== */
-body.hacker-mode {
-  --bg-color: #050d08;
-  --bg-gradient: radial-gradient(circle at 50% 0%, #0c2014 0%, #050d08 100%);
-  --card-bg: rgba(10, 24, 15, 0.92);
-  --card-hover: rgba(15, 36, 22, 0.95);
-  --border-color: rgba(0, 255, 102, 0.25);
-  --text-primary: #00ff66;
-  --text-secondary: #00cc52;
-  --text-muted: #008837;
-  --accent-color: #00ff66;
-  --accent-hover: #00cc52;
-  --accent-glow: rgba(0, 255, 102, 0.4);
-}
 
-body.hacker-mode * {
-  font-family: "Fira Code", "Courier New", monospace !important;
-}
-
-body.hacker-mode .btn-control,
-body.hacker-mode .text-link-btn,
-body.hacker-mode .btn-primary {
-  background: rgba(0, 255, 102, 0.1) !important;
-  border-color: rgba(0, 255, 102, 0.4) !important;
-  color: #00ff66 !important;
-  box-shadow: 0 0 10px rgba(0, 255, 102, 0.2) !important;
-}
-
-body.hacker-mode .modal-card,
-body.hacker-mode .settings-split-modal {
-  background: #08140c !important;
-  border-color: rgba(0, 255, 102, 0.35) !important;
-  color: #00ff66 !important;
-  box-shadow: 0 0 35px rgba(0, 255, 102, 0.2) !important;
-}
-
-body.hacker-mode input,
-body.hacker-mode textarea {
-  background: rgba(0, 20, 10, 0.7) !important;
-  border-color: rgba(0, 255, 102, 0.4) !important;
-  color: #00ff66 !important;
-}
-
-body.hacker-mode .clock-face {
-  background: rgba(5, 20, 10, 0.9) !important;
-  border-color: #00ff66 !important;
-  box-shadow: 0 0 25px rgba(0, 255, 102, 0.35) !important;
-}
-
-body.hacker-mode .hour-hand {
-  background: #00ff66 !important;
-}
-
-body.hacker-mode .minute-hand,
-body.hacker-mode .second-hand {
-  background: #33ff88 !important;
-}
-
-body.hacker-mode .clock-pin {
-  background: #00ff66 !important;
-  box-shadow: 0 0 8px #00ff66 !important;
-}
 
 /* ==========================================================================
    Section Item Appearance Modes (Logo & Name, Logo Only, Name Only)

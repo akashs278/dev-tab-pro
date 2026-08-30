@@ -7,7 +7,7 @@
 
 > **A clean, modern, ultra-responsive Chrome Extension New Tab Dashboard designed specifically for developers and power users.**
 
-DevTab Pro turns your browser's new tab page into a high-productivity command center equipped with customizable widget sections, AI tool launchers, local dev server port monitoring, built-in developer utility drawers (JSON formatter, Base64, URL encode, UUID, QR Code generator), dynamic bookmark shortcuts, Hacker Terminal theme mode, and an official Google Apps waffle menu.
+DevTab Pro turns your browser's new tab page into a high-productivity command center equipped with customizable widget sections, AI tool launchers, local dev server port monitoring, built-in developer utility drawers (JSON formatter, Base64, URL encode, UUID, QR Code generator), dynamic bookmark shortcuts, customizable theme presets, and an official Google Apps waffle menu.
 
 ---
 
@@ -29,7 +29,7 @@ DevTab Pro turns your browser's new tab page into a high-productivity command ce
 - **Manageable AI Directory**: Dedicated modal to add custom AI tools, specify descriptions, and remove existing ones.
 
 ### 🎨 Themes & Modular Customization
-- **Theme Modes**: Instantly cycle between **Obsidian Dark 🌙**, **Minimal Light ☀️**, and **Hacker Terminal 💻** modes with a custom dynamic theme switcher icon.
+- **Theme Modes**: Instantly cycle between **Obsidian Dark 🌙**, **Minimal Light ☀️**, and custom developer color presets with a dynamic theme switcher icon.
 - **Drag-and-Drop Section Reordering**: Rearrange all main dashboard widget sections with persistent layout positioning saved locally.
 - **Clear Drop-Target Indicators**: Smooth visual feedback and target drop badges when dragging widgets.
 - **Section Resizing**: Vertical card resizing support for flexible workspace arrangements.
