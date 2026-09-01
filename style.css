@@ -289,14 +289,17 @@ body.light-mode .g-dropdown {
   transform: translateY(-2px);
 }
 
-.g-app-tile img {
+.g-app-tile img,
+.dev-util-tile .util-icon-badge {
   width: 32px;
   height: 32px;
   margin-bottom: 6px;
   object-fit: contain;
+  pointer-events: none;
 }
 
-.g-app-tile span {
+.g-app-tile span,
+.dev-util-tile span {
   font-size: 0.75rem;
   font-weight: 500;
   text-align: center;
@@ -304,6 +307,7 @@ body.light-mode .g-dropdown {
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
+  pointer-events: none;
 }
 
 /* Dashboard 2-Column Layout */
@@ -1199,12 +1203,39 @@ body.light-mode .engine-option:hover {
 
 .drag-over {
   border-color: var(--accent-color) !important;
-  transform: scale(1.03) !important;
+  transform: scale(1.02) !important;
   box-shadow: 0 0 12px var(--accent-glow) !important;
 }
 
+.dragging {
+  opacity: 0.35 !important;
+  transform: scale(0.96) !important;
+}
+
 .draggable-widget {
-  cursor: move;
+  cursor: grab;
+}
+
+.draggable-widget:active {
+  cursor: grabbing;
+}
+
+.settings-nav .tab-btn {
+  cursor: grab;
+}
+
+.settings-nav .tab-btn:active {
+  cursor: grabbing;
+}
+
+.settings-nav .tab-btn.dragging {
+  opacity: 0.35 !important;
+  transform: scale(0.96) !important;
+}
+
+.settings-nav .tab-btn.drag-over {
+  border-color: var(--accent-color) !important;
+  background: rgba(99, 102, 241, 0.15) !important;
 }
 
 .card-box.widget-dragging {
@@ -2106,14 +2137,26 @@ body.light-mode .add-ai-form {
   border-color: rgba(0, 0, 0, 0.1) !important;
 }
 
+body.light-mode input[type="text"],
+body.light-mode input[type="number"],
+body.light-mode input[type="url"],
+body.light-mode input[type="password"],
+body.light-mode textarea,
+body.light-mode select,
 body.light-mode .add-ai-form input,
 body.light-mode .form-group input,
 body.light-mode .form-group textarea,
 body.light-mode .color-input-wrapper,
 body.light-mode .settings-select {
   background: #ffffff !important;
-  border-color: rgba(0, 0, 0, 0.16) !important;
+  border-color: rgba(0, 0, 0, 0.18) !important;
   color: #0f172a !important;
+}
+
+body.light-mode input::placeholder,
+body.light-mode textarea::placeholder {
+  color: #64748b !important;
+  opacity: 1 !important;
 }
 
 body.light-mode .settings-select option,
@@ -2122,6 +2165,174 @@ body.light-mode select option {
   color: #0f172a !important;
 }
 
+/* Search Bar in Light Mode */
+body.light-mode .search-bar-inner {
+  background: #ffffff !important;
+  border-color: rgba(0, 0, 0, 0.16) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+}
+
+body.light-mode .search-bar-inner input {
+  color: #0f172a !important;
+}
+
+body.light-mode .search-bar-inner input::placeholder {
+  color: #64748b !important;
+}
+
+body.light-mode .engine-select-pill {
+  background: #f1f5f9 !important;
+  color: #0f172a !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+body.light-mode .engine-select-pill:hover {
+  background: #e2e8f0 !important;
+}
+
+body.light-mode .engine-dropdown {
+  background: #ffffff !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12) !important;
+}
+
+body.light-mode .engine-option {
+  color: #0f172a !important;
+}
+
+body.light-mode .engine-option small {
+  color: #64748b !important;
+}
+
+body.light-mode .engine-option:hover {
+  background: #f1f5f9 !important;
+}
+
+body.light-mode .engine-option.active {
+  background: var(--accent-color, #6366f1) !important;
+  color: #ffffff !important;
+}
+
+body.light-mode .engine-option.active small {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+/* To-Do Form Input & Items in Light Mode */
+body.light-mode .todo-form input {
+  background: #ffffff !important;
+  border-color: rgba(0, 0, 0, 0.16) !important;
+  color: #0f172a !important;
+}
+
+body.light-mode .todo-form input::placeholder {
+  color: #64748b !important;
+}
+
+body.light-mode .todo-item {
+  background: #f8fafc !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  color: #0f172a !important;
+}
+
+body.light-mode .todo-item:hover {
+  background: #f1f5f9 !important;
+}
+
+body.light-mode .todo-item.completed span {
+  color: #94a3b8 !important;
+}
+
+/* Local Dev Host Ports Form & Cards in Light Mode */
+body.light-mode .front-port-form input {
+  background: #ffffff !important;
+  border-color: rgba(0, 0, 0, 0.16) !important;
+  color: #0f172a !important;
+}
+
+body.light-mode .front-port-form input::placeholder {
+  color: #64748b !important;
+}
+
+body.light-mode .sub-label {
+  color: #334155 !important;
+  font-weight: 600 !important;
+}
+
+body.light-mode .host-card {
+  background: #ecfdf5 !important;
+  border-color: #a7f3d0 !important;
+  color: #065f46 !important;
+}
+
+body.light-mode .host-card:hover {
+  background: #d1fae5 !important;
+  border-color: #34d399 !important;
+}
+
+body.light-mode .host-title {
+  color: #047857 !important;
+  font-weight: 700 !important;
+}
+
+body.light-mode .host-sub {
+  color: #065f46 !important;
+  font-weight: 600 !important;
+}
+
+/* General Card Boxes & Item Text in Light Mode */
+body.light-mode .card-box {
+  background: #ffffff !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04) !important;
+}
+
+body.light-mode .card-header h3 {
+  color: #0f172a !important;
+}
+
+body.light-mode .box-label {
+  color: #475569 !important;
+}
+
+body.light-mode .date-text {
+  color: #334155 !important;
+}
+
+body.light-mode .dev-platform-card,
+body.light-mode .ai-mini-card,
+body.light-mode .shortcut-card,
+body.light-mode .ai-dir-card,
+body.light-mode .cheat-card {
+  background: #f8fafc !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  color: #0f172a !important;
+}
+
+body.light-mode .dev-platform-card:hover,
+body.light-mode .ai-mini-card:hover,
+body.light-mode .shortcut-card:hover,
+body.light-mode .ai-dir-card:hover {
+  background: #f1f5f9 !important;
+  border-color: var(--accent-color, #6366f1) !important;
+}
+
+body.light-mode .ai-mini-info strong,
+body.light-mode .platform-info strong,
+body.light-mode .shortcut-title,
+body.light-mode .ai-dir-info strong {
+  color: #0f172a !important;
+}
+
+body.light-mode .site-sub-link,
+body.light-mode .ai-mini-info small,
+body.light-mode .platform-info small,
+body.light-mode .ai-dir-info .site-sub-link,
+body.light-mode .shortcut-info small {
+  color: #475569 !important;
+  font-weight: 500 !important;
+}
+
+/* Button Overrides in Light Mode */
 body.light-mode .btn-primary,
 body.light-mode .btn-secondary {
   background: #f1f5f9 !important;
@@ -2146,54 +2357,11 @@ body.light-mode .btn-secondary.active {
   color: #ffffff !important;
 }
 
-body.light-mode input::placeholder,
-body.light-mode textarea::placeholder {
-  color: #94a3b8 !important;
-  opacity: 1 !important;
-}
-
 body.light-mode .add-ai-form input:focus,
 body.light-mode .form-group input:focus,
 body.light-mode .form-group textarea:focus {
   border-color: #6366f1 !important;
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15) !important;
-}
-
-/* Modal Directory Cards & Link Cards in Light Mode */
-body.light-mode .ai-dir-card,
-body.light-mode .shortcut-card,
-body.light-mode .cheat-card {
-  background: #f8fafc !important;
-  border-color: rgba(0, 0, 0, 0.08) !important;
-  color: #0f172a !important;
-}
-
-body.light-mode .ai-dir-card:hover,
-body.light-mode .shortcut-card:hover {
-  background: #f1f5f9 !important;
-  border-color: #6366f1 !important;
-}
-
-body.light-mode .ai-dir-info strong,
-body.light-mode .platform-info strong,
-body.light-mode .shortcut-info strong {
-  color: #0f172a !important;
-}
-
-body.light-mode .platform-info .site-sub-link,
-body.light-mode .ai-dir-info .site-sub-link,
-body.light-mode .shortcut-info small {
-  color: #4f46e5 !important;
-}
-
-body.light-mode .btn-secondary {
-  background: #f1f5f9 !important;
-  border-color: rgba(0, 0, 0, 0.12) !important;
-  color: #0f172a !important;
-}
-
-body.light-mode .btn-secondary:hover {
-  background: #e2e8f0 !important;
 }
 
 /* Analog Clock in Light Mode */

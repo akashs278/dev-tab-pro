@@ -456,12 +456,15 @@ function initGoogleLinks() {
 
       // Drag and Drop
       tile.addEventListener("dragstart", (e) => {
+        e.stopPropagation();
         draggedGIndex = idx;
         tile.classList.add("dragging");
         e.dataTransfer.effectAllowed = "move";
+        e.dataTransfer.setData("text/plain", String(idx));
       });
 
-      tile.addEventListener("dragend", () => {
+      tile.addEventListener("dragend", (e) => {
+        e.stopPropagation();
         tile.classList.remove("dragging");
         googleDropdown
           .querySelectorAll(".g-app-tile")
@@ -470,15 +473,18 @@ function initGoogleLinks() {
 
       tile.addEventListener("dragover", (e) => {
         e.preventDefault();
+        e.stopPropagation();
         tile.classList.add("drag-over");
       });
 
-      tile.addEventListener("dragleave", () => {
+      tile.addEventListener("dragleave", (e) => {
+        e.stopPropagation();
         tile.classList.remove("drag-over");
       });
 
       tile.addEventListener("drop", (e) => {
         e.preventDefault();
+        e.stopPropagation();
         tile.classList.remove("drag-over");
         if (draggedGIndex !== null && draggedGIndex !== idx) {
           const moved = gApps.splice(draggedGIndex, 1)[0];
@@ -590,12 +596,15 @@ function initDevUtilities() {
 
       // Drag and Drop reordering
       tile.addEventListener("dragstart", (e) => {
+        e.stopPropagation();
         draggedUtilIndex = idx;
         tile.classList.add("dragging");
         e.dataTransfer.effectAllowed = "move";
+        e.dataTransfer.setData("text/plain", String(idx));
       });
 
-      tile.addEventListener("dragend", () => {
+      tile.addEventListener("dragend", (e) => {
+        e.stopPropagation();
         tile.classList.remove("dragging");
         utilsDropdown
           .querySelectorAll(".dev-util-tile")
@@ -604,15 +613,18 @@ function initDevUtilities() {
 
       tile.addEventListener("dragover", (e) => {
         e.preventDefault();
+        e.stopPropagation();
         tile.classList.add("drag-over");
       });
 
-      tile.addEventListener("dragleave", () => {
+      tile.addEventListener("dragleave", (e) => {
+        e.stopPropagation();
         tile.classList.remove("drag-over");
       });
 
       tile.addEventListener("drop", (e) => {
         e.preventDefault();
+        e.stopPropagation();
         tile.classList.remove("drag-over");
         if (draggedUtilIndex !== null && draggedUtilIndex !== idx) {
           const moved = devUtils.splice(draggedUtilIndex, 1)[0];
@@ -752,6 +764,7 @@ function initAiHubModal() {
           draggedAiIndex = index;
           card.classList.add("dragging");
           e.dataTransfer.effectAllowed = "move";
+          e.dataTransfer.setData("text/plain", String(index));
         });
 
         card.addEventListener("dragend", () => {
@@ -855,6 +868,7 @@ function initAiHubModal() {
           draggedAiDirIndex = idx;
           card.classList.add("dragging");
           e.dataTransfer.effectAllowed = "move";
+          e.dataTransfer.setData("text/plain", String(idx));
         });
 
         card.addEventListener("dragend", () => {
@@ -1203,6 +1217,7 @@ function initDevHosts() {
         draggedIndex = index;
         card.classList.add("dragging");
         e.dataTransfer.effectAllowed = "move";
+        e.dataTransfer.setData("text/plain", String(index));
       });
 
       card.addEventListener("dragend", () => {
@@ -1362,6 +1377,7 @@ function initDevWebsites() {
           draggedIndex = index;
           card.classList.add("dragging");
           e.dataTransfer.effectAllowed = "move";
+          e.dataTransfer.setData("text/plain", String(index));
         });
 
         card.addEventListener("dragend", () => {
@@ -1465,6 +1481,7 @@ function initDevWebsites() {
           draggedDevDirIndex = index;
           dirCard.classList.add("dragging");
           e.dataTransfer.effectAllowed = "move";
+          e.dataTransfer.setData("text/plain", String(index));
         });
 
         dirCard.addEventListener("dragend", () => {
@@ -1619,6 +1636,7 @@ function initCustomShortcuts() {
         draggedIndex = index;
         card.classList.add("dragging");
         e.dataTransfer.effectAllowed = "move";
+        e.dataTransfer.setData("text/plain", String(index));
       });
 
       card.addEventListener("dragend", () => {
@@ -1723,6 +1741,7 @@ function initDevToolbox() {
   }
 
   // Toolbox Tab Navigation
+  const sidebarNav = document.querySelector("#toolbox-modal .settings-nav");
   const tabBtns = document.querySelectorAll(".toolbox-tabs .tab-btn");
   const tabContents = document.querySelectorAll(".toolbox-body .tab-content");
   const panelTitleEl = document.getElementById("toolbox-panel-title");
@@ -1739,9 +1758,26 @@ function initDevToolbox() {
     cheatsheet: "Git & Docker Cheatsheets",
   };
 
+  // Restore saved sidebar tab order
+  if (sidebarNav) {
+    const savedNavOrder = StorageManager.get("devtab_toolbox_nav_order", null);
+    if (Array.isArray(savedNavOrder) && savedNavOrder.length > 0) {
+      const navMap = {};
+      sidebarNav.querySelectorAll(".tab-btn").forEach((btn) => {
+        if (btn.dataset.tab) navMap[btn.dataset.tab] = btn;
+      });
+      savedNavOrder.forEach((tabKey) => {
+        if (navMap[tabKey]) sidebarNav.appendChild(navMap[tabKey]);
+      });
+    }
+  }
+
+  let draggedNavBtn = null;
   tabBtns.forEach((btn) => {
+    btn.draggable = true;
+
     btn.addEventListener("click", () => {
-      tabBtns.forEach((b) => b.classList.remove("active"));
+      document.querySelectorAll(".toolbox-tabs .tab-btn").forEach((b) => b.classList.remove("active"));
       tabContents.forEach((c) => c.classList.remove("active"));
 
       btn.classList.add("active");
@@ -1753,6 +1789,43 @@ function initDevToolbox() {
       if (panelTitleEl && TOOLBOX_TITLES[tabKey]) {
         panelTitleEl.textContent = TOOLBOX_TITLES[tabKey];
       }
+    });
+
+    // Drag and Drop Sidebar Items
+    btn.addEventListener("dragstart", (e) => {
+      draggedNavBtn = btn;
+      btn.classList.add("dragging");
+      e.dataTransfer.effectAllowed = "move";
+      e.dataTransfer.setData("text/plain", btn.dataset.tab || "");
+    });
+
+    btn.addEventListener("dragend", () => {
+      btn.classList.remove("dragging");
+      if (sidebarNav) {
+        sidebarNav.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("drag-over"));
+        const newOrder = Array.from(sidebarNav.querySelectorAll(".tab-btn"))
+          .map((b) => b.dataset.tab)
+          .filter(Boolean);
+        StorageManager.set("devtab_toolbox_nav_order", newOrder);
+      }
+      draggedNavBtn = null;
+    });
+
+    btn.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      if (!draggedNavBtn || draggedNavBtn === btn || !sidebarNav) return;
+      btn.classList.add("drag-over");
+      const bounding = btn.getBoundingClientRect();
+      const offset = e.clientY - bounding.top;
+      if (offset > bounding.height / 2) {
+        sidebarNav.insertBefore(draggedNavBtn, btn.nextSibling);
+      } else {
+        sidebarNav.insertBefore(draggedNavBtn, btn);
+      }
+    });
+
+    btn.addEventListener("dragleave", () => {
+      btn.classList.remove("drag-over");
     });
   });
 
@@ -2864,16 +2937,25 @@ function initWidgetDragAndDrop() {
       w.classList.add("draggable-widget");
 
       w.addEventListener("dragstart", (e) => {
-        const isInteractive = e.target.closest(
-          "button, input, select, textarea, a, .shortcut-card, .ai-mini-card, .dev-platform-card, .host-card, .todo-item",
+        // If user is dragging a nested card inside the widget, let the nested card handle it
+        const isNestedCard = e.target.closest(
+          ".shortcut-card, .ai-mini-card, .dev-platform-card, .host-card, .todo-item, .ai-dir-card",
         );
-        if (isInteractive) {
+        if (isNestedCard) {
+          return;
+        }
+
+        // Prevent dragging widget if clicking input controls
+        const isFormInput = e.target.closest("input, select, textarea, button");
+        if (isFormInput) {
           e.preventDefault();
           return;
         }
+
         draggedWidget = w;
         w.classList.add("widget-dragging");
         e.dataTransfer.effectAllowed = "move";
+        e.dataTransfer.setData("text/plain", w.id);
       });
 
       w.addEventListener("dragend", () => {
@@ -3004,7 +3086,11 @@ function initTopControlsReorder() {
   const items = container.querySelectorAll(".top-control-item");
   items.forEach((item) => {
     item.addEventListener("dragstart", (e) => {
-      // Prevent drag if clicking inside an active dropdown
+      // If user is dragging a tile inside the dropdown, do not drag top-control container
+      if (e.target.closest(".g-dropdown")) {
+        return;
+      }
+      // Prevent drag of top control item if dropdown is open
       const dropdownOpen = item.querySelector(".g-dropdown:not(.hidden)");
       if (dropdownOpen) {
         e.preventDefault();
@@ -3016,7 +3102,8 @@ function initTopControlsReorder() {
       e.dataTransfer.setData("text/plain", item.dataset.controlId);
     });
 
-    item.addEventListener("dragend", () => {
+    item.addEventListener("dragend", (e) => {
+      if (e.target.closest(".g-dropdown")) return;
       if (draggedControl) {
         draggedControl.classList.remove("top-control-dragging");
       }
@@ -3031,8 +3118,8 @@ function initTopControlsReorder() {
     });
 
     item.addEventListener("dragover", (e) => {
+      if (e.target.closest(".g-dropdown") || !draggedControl || draggedControl === item) return;
       e.preventDefault();
-      if (!draggedControl || draggedControl === item) return;
 
       item.classList.add("drag-over");
       const bounding = item.getBoundingClientRect();
@@ -3044,11 +3131,13 @@ function initTopControlsReorder() {
       }
     });
 
-    item.addEventListener("dragleave", () => {
+    item.addEventListener("dragleave", (e) => {
+      if (e.target.closest(".g-dropdown")) return;
       item.classList.remove("drag-over");
     });
 
     item.addEventListener("drop", (e) => {
+      if (e.target.closest(".g-dropdown")) return;
       e.preventDefault();
       item.classList.remove("drag-over");
     });
