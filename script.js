@@ -429,7 +429,7 @@ function initGoogleLinks() {
     gApps.forEach((app, idx) => {
       const tile = document.createElement("a");
       tile.href = sanitizeUrl(app.url);
-      tile.target = "_blank";
+      tile.target = "_self";
       tile.rel = "noopener noreferrer";
       tile.className = "g-app-tile";
       tile.draggable = true;
@@ -724,7 +724,7 @@ function initAiHubModal() {
 
         const card = document.createElement("a");
         card.href = sanitizeUrl(tool.url);
-        card.target = "_blank";
+        card.target = "_self";
         card.rel = "noopener noreferrer";
         card.className = "ai-mini-card";
         card.draggable = true;
@@ -822,7 +822,7 @@ function initAiHubModal() {
 
         const innerLink = document.createElement("a");
         innerLink.href = sanitizeUrl(tool.url);
-        innerLink.target = "_blank";
+        innerLink.target = "_self";
         innerLink.rel = "noopener noreferrer";
         innerLink.className = "ai-dir-card-inner";
 
@@ -1182,7 +1182,7 @@ function initDevHosts() {
     ports.forEach((port, index) => {
       const card = document.createElement("a");
       card.href = "http://localhost:" + encodeURIComponent(port);
-      card.target = "_blank";
+      card.target = "_self";
       card.rel = "noopener noreferrer";
       card.className = "host-card";
       card.draggable = true;
@@ -1337,7 +1337,7 @@ function initDevWebsites() {
 
         const card = document.createElement("a");
         card.href = sanitizeUrl(site.url);
-        card.target = "_blank";
+        card.target = "_self";
         card.rel = "noopener noreferrer";
         card.className = "dev-platform-card";
         card.draggable = true;
@@ -1435,7 +1435,7 @@ function initDevWebsites() {
 
         const innerLink = document.createElement("a");
         innerLink.href = sanitizeUrl(site.url);
-        innerLink.target = "_blank";
+        innerLink.target = "_self";
         innerLink.rel = "noopener noreferrer";
         innerLink.className = "ai-dir-card-inner";
 
@@ -1598,7 +1598,7 @@ function initCustomShortcuts() {
     shortcuts.forEach((sc, index) => {
       const card = document.createElement("a");
       card.href = sanitizeUrl(sc.url);
-      card.target = "_blank";
+      card.target = "_self";
       card.rel = "noopener noreferrer";
       card.className = "shortcut-card";
       card.draggable = true;
